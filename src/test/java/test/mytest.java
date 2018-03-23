@@ -10,6 +10,6 @@ public class mytest {
 	{
 		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 		testController t=context.getBean(testController.class);
-		t.login();
+		//t.login();
 	}
 }

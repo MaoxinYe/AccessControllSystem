@@ -19,7 +19,7 @@ public class testController {
 	private TestService testService;
 	
 	
-	@RequestMapping(value = "/login.html", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/login.html", method = RequestMethod.GET)
 	public String login() {
 		
 		
@@ -30,5 +30,5 @@ public class testController {
 		}
 		
 		return "login";
-	}
+	}*/
 }

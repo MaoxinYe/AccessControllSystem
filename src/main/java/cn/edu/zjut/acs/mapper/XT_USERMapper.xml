@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.zjut.acs.mapper.XT_USERMapper" >
+
+	<resultMap type="cn.edu.zjut.acs.model.XT_USER" id="userResult">
+	  <id column="xt_userid" property="xt_userid"/>
+	  <result column="password" property="password"/>
+	  <result column="username" property="username"/>
+	  <result column="addtime" property="addtime"/>
+	  
+	  <association property="role" javaType="cn.edu.zjut.acs.model.XT_ROLE">
+	    <id column="roleid" property="roleid"/>
+	    <result column="rolename" property="rolename"/>
+	    <result column="addtime" property="addtime"/>
+	  </association>	   
+	</resultMap>
+	<sql id="cols">
+		xt_userid,username,password,roleid,addtime
+	</sql>
+	<select id="getUserByUsername" resultType="cn.edu.zjut.acs.model.XT_USER" parameterType="java.lang.String">
+		select <include refid="cols"></include> from xt_user where username=#{username}
+	</select>
+    <select id="getUserList" resultMap="userResult" parameterType="java.util.Map">
+    	select x.xt_userid,x.password,x.username,y.roleid,x.addtime,y.rolename,y.addtime
+    		from xt_user x,xt_role y
+    	<where>
+			<if test="1==1">
+			 	x.roleid = y.roleid
+			</if>
+			<if test="username != null and username != '' ">
+			 	and x.username like concat('%',#{username},'%') 
+			</if>
+			<if test="roleid != null">
+			 	and x.roleid = #{roleid} 
+			</if>
+			<!-- <if test="session_role != null">
+			 	<![CDATA[ and x.roleid > #{session_role}]]>
+			</if> -->
+		</where>
+		order by x.xt_userid desc 
+		<if test="pageCommon != null and pageCommon.startRow != null and pageCommon.pageSize != null ">
+			limit #{pageCommon.startRow},#{pageCommon.pageSize}
+		</if>
+    </select> 
+    
+    
+   
+</mapper>

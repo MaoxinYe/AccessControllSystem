@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.zjut.acs.mapper.ModuleMapper">
+
+  <resultMap type="cn.edu.zjut.acs.model.Module" id="moduleResult">
+    <id column="modulecode" property="modulecode" />
+    <result column="modulename" property="modulename" />
+    <result column="supercode" property="supercode" />
+    <result column="modulepage" property="modulepage" />
+    <result column="modulelevel" property="modulelevel" />
+    <result column="addtime" property="addtime" />
+    
+  </resultMap>
+  
+  <insert id="saveModule" parameterType="cn.edu.zjut.acs.model.Module">
+    	insert into jc_module (modulecode, modulename, supercode, modulepage, modulelevel, addtime)
+        values ( #{modulecode}, #{modulename}, #{supercode}, #{modulepage}, #{modulelevel}, #{addtime} )
+   </insert>
+   
+   <delete id="deleteModuleBysupercode" parameterType="java.lang.Integer">  
+        delete from jc_module where supercode = #{supercode}  
+    </delete>
+    
+    <delete id="deleteModule" parameterType="cn.edu.zjut.acs.model.Module">
+        delete from jc_module where modulecode = #{modulecode}  
+    </delete>
+    
+   <update id="updateModule" parameterType="cn.edu.zjut.acs.model.Module">
+    	update jc_module m set modulename = #{modulename}, supercode = #{supercode}, modulepage = #{modulepage}  
+    	where modulecode = #{modulecode}
+   </update>
+  
+  <select id="getEntityByPK" resultType="cn.edu.zjut.acs.model.Module" parameterType="java.lang.Integer">
+    select * from jc_module where modulecode = #{modulecode}
+  </select>
+  
+    <select id="getModuleByModulename" resultType="cn.edu.zjut.acs.model.Module" parameterType="java.lang.String">
+        select m.modulecode, m.modulename, m.supercode, m.modulepage, m.modulelevel, m.addtime from jc_module m
+        where m.modulename = #{modulename}  
+    </select>
+
+    <select id="getModuleByModulepage" resultType="cn.edu.zjut.acs.model.Module" parameterType="java.lang.String">
+        select m.modulecode, m.modulename, m.supercode, m.modulepage, m.modulelevel, m.addtime from jc_module m
+        where m.modulepage = #{modulepage}  
+    </select>
+  
+  <select id="getModuleList" resultMap="moduleResult" parameterType="java.util.Map">
+		select * from jc_module m
+		<where>  
+	        <if test="modulelevel != null and modulelevel != '' or modulelevel==0 ">  
+	            m.modulelevel = #{modulelevel}
+	        </if> 
+	        <if test="modulecode != null and modulecode != '' ">  
+	            and m.modulecode = #{modulecode}  
+	        </if> 
+	        <if test="modulename != null and modulename != '' ">  
+                and m.modulename = #{modulename}  
+            </if> 
+            <if test="modulepage != null and modulepage != '' ">  
+                and m.modulepage = #{modulepage}  
+            </if>
+            <if test="supercode != null and supercode != '' ">  
+                and m.supercode = #{supercode}  
+            </if> 
+	    </where>
+	    order by m.modulecode asc
+    </select>
+  
+</mapper>

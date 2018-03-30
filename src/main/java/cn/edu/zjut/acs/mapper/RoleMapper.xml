@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.zjut.acs.mapper.RoleMapper" >
+
+
+    <select id="getRoleByPK" resultType="cn.edu.zjut.acs.model.XT_ROLE" parameterType="java.lang.Integer">
+		select m.roleid, m.rolename, m.addtime from xt_role m
+		where m.roleid = #{roleid}
+	</select>
+    
+    <select id="getRoleList" parameterType="java.util.Map" resultType="cn.edu.zjut.acs.model.XT_ROLE" >
+		select * from xt_role m
+		<where>
+			<if test="rolename != null and rolename != ''">
+				and rolename = #{rolename}
+			</if>
+			<if test="session_role != null">
+				<![CDATA[ and roleid > #{session_role}]]>  
+			</if>
+		</where>
+	    order by m.roleid asc
+    </select>
+       
+	<insert id="saveRole" parameterType="cn.edu.zjut.acs.model.XT_ROLE">
+    	insert into xt_role (roleid, rolename, addtime)
+        values ( null, #{rolename}, now() )
+    </insert>
+    
+    <update id="updateRole" parameterType="cn.edu.zjut.acs.model.XT_ROLE">
+    	update xt_role m set rolename = #{rolename}  
+    	where roleid = #{roleid}
+    </update>
+    
+    <delete id="deleteRole" parameterType="cn.edu.zjut.acs.model.XT_ROLE">
+        delete from xt_role where roleid = #{roleid}  
+    </delete>
+
+</mapper>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.zjut.acs.mapper.UserMapper" >
+
+	<resultMap type="cn.edu.zjut.acs.model.XT_USER" id="userResult">
+	  <id column="userid" property="userid"/>
+	  <result column="password" property="password"/>
+	  <result column="username" property="username"/>
+	  <result column="addtime" property="addtime"/>
+	  <result column="roleid" property="roleid"/>
+	  
+	  <association property="xt_role" javaType="cn.edu.zjut.acs.model.XT_ROLE">
+	    <id column="roleid" property="roleid"/>
+	    <result column="rolename" property="rolename"/>
+	    <result column="addtime" property="addtime"/>
+	  </association>	   
+	</resultMap>
+	<sql id="cols">
+		userid,username,password,roleid,addtime
+	</sql>
+
+	<select id="getUserByPK" resultType="cn.edu.zjut.acs.model.XT_USER" parameterType="java.lang.Integer">
+    	select <include refid="cols"/> from xt_user where userid = #{userid}
+    </select>
+
+    <select id="getUserByLoginName" resultType="cn.edu.zjut.acs.model.XT_USER" parameterType="java.lang.String">
+    	select <include refid="cols"/> from xt_user where username = #{username}
+    </select>
+    
+    <select id="getUserList" resultMap="userResult" parameterType="java.util.Map">
+    	select x.userid,x.password,x.username,y.roleid,x.addtime,y.rolename,y.addtime
+    		from xt_user x,xt_role y
+    	<where>
+			<if test="1==1">
+			 	x.roleid = y.roleid
+			</if>
+			<if test="username != null and username != '' ">
+			 	and x.username like concat('%',#{username},'%') 
+			</if>
+			<if test="roleid != null">
+			 	and x.roleid = #{roleid} 
+			</if>
+			<!-- <if test="session_role != null">
+			 	<![CDATA[ and x.roleid > #{session_role}]]>
+			</if> -->
+		</where>
+		order by x.userid desc 
+		<if test="pageCommon != null and pageCommon.startRow != null and pageCommon.pageSize != null ">
+			limit #{pageCommon.startRow},#{pageCommon.pageSize}
+		</if>
+    </select> 
+    
+    <select id="getTotalNumber" resultType="java.lang.Integer" parameterType="java.util.Map">
+    	select count(x.userid) from xt_user x,xt_role y
+    	<where>
+			<if test="1==1">
+			 	x.roleid = y.roleid
+			</if>
+			<if test="username != null and username != '' ">
+			 	and x.username like concat('%',#{username},'%') 
+			</if>
+			<if test="roleid != null">
+			 	and x.roleid = #{roleid} 
+			</if>
+			<!-- <if test="session_role != null">
+			 	<![CDATA[ and x.roleid > #{session_role}]]>
+			</if> -->
+		</where>
+    </select>  
+    
+    <insert id="saveUser" parameterType="cn.edu.zjut.acs.model.XT_USER">
+    	insert into xt_user (userid,password,username,roleid,addtime)
+        values (null, #{password}, #{username}, #{roleid}, now() )
+    </insert>
+    
+    <update id="updateUser" parameterType="cn.edu.zjut.acs.model.XT_USER">
+    	update xt_user m set username = #{username},roleid = #{roleid},password = #{password}   
+    	where userid = #{userid}
+    </update>
+    
+    
+    <delete id="deleteUser" parameterType="cn.edu.zjut.acs.model.XT_USER">
+        delete from xt_user where userid = #{userid}  
+    </delete> 
+    
+</mapper>

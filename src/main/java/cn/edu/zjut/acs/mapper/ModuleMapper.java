@@ -1,9 +1,3 @@
-/** 
-* @Filename: FaceidMapper.java
-* @package: cn.com.itsea.acs.mapper
-* Date: 2017年12月01日 下午3:16:42
-* Copyright: Copyright (c) 2017, 杭州海量信息技术有限公司  All Rights Reserved.
-*/
 package cn.edu.zjut.acs.mapper;
 
 import java.util.List;

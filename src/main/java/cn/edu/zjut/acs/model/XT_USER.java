@@ -4,16 +4,29 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class XT_USER implements Serializable{
-	private Integer xt_userid;
+	
+	private static final long serialVersionUID = 6804891799179422117L;
+	private Integer userid;
 	private String username;
 	private String password;
 	private Date addtime;
+	private Integer roleid;
 	private XT_ROLE xt_role;
-	public Integer getXt_userid() {
-		return xt_userid;
+	
+	
+	
+	
+	public Integer getRoleid() {
+		return roleid;
 	}
-	public void setXt_userid(Integer xt_userid) {
-		this.xt_userid = xt_userid;
+	public void setRoleid(Integer roleid) {
+		this.roleid = roleid;
+	}
+	public Integer getUserid() {
+		return userid;
+	}
+	public void setUserid(Integer userid) {
+		this.userid = userid;
 	}
 	public String getUsername() {
 		return username;

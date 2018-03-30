@@ -1,9 +1,3 @@
-/** 
-* @Filename: ModuleService.java
-* @package: cn.com.itsea.acs.dao
-* Date: 2017年12月04日 下午2:14:49
-* Copyright: Copyright (c) 2017, 杭州海量信息技术有限公司  All Rights Reserved.
-*/
 package cn.edu.zjut.acs.service.impl;
 
 import java.util.List;
@@ -14,22 +8,20 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.edu.zjut.acs.mapper.LogMapper;
 import cn.edu.zjut.acs.mapper.ModuleMapper;
 import cn.edu.zjut.acs.model.Module;
+import cn.edu.zjut.acs.model.XT_LOG;
 import cn.edu.zjut.acs.service.ModuleService;
 
-/** 
- * @ClassName: ModuleService
- * @author  <a href="mailto:945922054@qq.com">余其刚</a> 
- * @date 创建时间：2017年12月04日 下午2:14:49
- * @version V1.0  
- * @since  JDK 1.7 
- */
+
 @Service
 public class ModuleServiceImpl implements ModuleService {
 	
 	@Resource
 	private ModuleMapper moduleMapper;
+	@Resource
+	private LogMapper logMapper;
 
 	public Module getEntityByPK(Integer modulecode) {
 		return moduleMapper.getEntityByPK(modulecode);
@@ -48,21 +40,24 @@ public class ModuleServiceImpl implements ModuleService {
 	}
 	
 	@Transactional
-	public void t_insert(Module module) {
+	public void t_insert(Module module, XT_LOG log) {
 		moduleMapper.saveModule(module);
+		logMapper.saveLog(log);
 	}
 
 	@Transactional
-	public void t_update(Module module) {
+	public void t_update(Module module, XT_LOG log) {
 		moduleMapper.updateModule(module);
+		logMapper.saveLog(log);
 	}
 
 	@Transactional
-	public void t_delete(Module module) {
+	public void t_delete(Module module, XT_LOG log) {
 		//删除模块下的菜单
 		moduleMapper.deleteModuleBysupercode(module.getModulecode());
 		//删除模块
 		moduleMapper.deleteModule(module);
 		//记录日志
+		logMapper.saveLog(log);
 	}
 }

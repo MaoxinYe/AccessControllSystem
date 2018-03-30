@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class XT_ROLE implements Serializable{
+	
+	private static final long serialVersionUID = 6804891799179422118L;
 	private Integer roleid;
 	private String rolename;
 	private Date addtime;

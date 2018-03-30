@@ -21,22 +21,22 @@
 <script type="text/javascript" src="../js/DD_belatedPNG_0.0.8a-min.js" ></script>
 <script>DD_belatedPNG.fix('*');</script>
 <![endif]-->
-<title>技术人员工作任务统计系统</title>
+<title>人脸识别门禁系统</title>
 </head>
 <body>
 <header class="navbar-wrapper">
 	<div class="navbar navbar-fixed-top">
-		<div class="container-fluid cl"> <p class="logo navbar-slogan f-l mr-10 hidden-xs" style="font-size: 18px">技术人员工作任务统计系统</p>
+		<div class="container-fluid cl"> <p class="logo navbar-slogan f-l mr-10 hidden-xs" style="font-size: 18px">人脸识别门禁系统</p>
 		<nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
 			<ul class="cl">
-				<%--这里不登录的  <li class="dropDown dropDown_hover">
-					<a href="#" class="dropDown_A">${session_username} <i class="Hui-iconfont">&#xe6d5;</i></a>
+				<li class="dropDown dropDown_hover">
+					<a href="#" class="dropDown_A">${session_loginname} <i class="Hui-iconfont">&#xe6d5;</i></a>
 					<ul class="dropDown-menu menu radius box-shadow">
-						<li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>
-						<li><a href="javascript:;" onClick="mypassword(${session_userid})">修改密码</a></li>
+						<%-- <li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>
+						<li><a href="javascript:;" onClick="mypassword(${session_userid})">修改密码</a></li> --%>
 						<li><a href="../sign-out.html">退出</a></li>
 					</ul>
-				</li> --%>
+				</li> 
 				<li id="Hui-skin" class="dropDown right dropDown_hover"> <a href="javascript:;" class="dropDown_A" title="换肤"><i class="Hui-iconfont" style="font-size:18px">&#xe62a;</i></a>
 					<ul class="dropDown-menu menu radius box-shadow">
 						<li><a href="javascript:;" data-val="default" title="默认（黑色）">默认（黑色）</a></li>

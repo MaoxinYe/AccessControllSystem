@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import cn.edu.zjut.acs.model.XT_USER;
-import cn.edu.zjut.acs.service.XT_USERService;
+import cn.edu.zjut.acs.service.UserService;
 import cn.edu.zjut.acs.support.JSONReturn;
 
 
@@ -22,15 +22,15 @@ import cn.edu.zjut.acs.support.JSONReturn;
 public class LoginController {
 	
 	@Resource
-	private XT_USERService xT_USERService;
+	private UserService userService;
 	
 	@RequestMapping(value = "/login.html", method = RequestMethod.GET)
-	public ModelAndView login() {
+	/*public ModelAndView login() {
 		return new ModelAndView("redirect:/manage/index.html");
-	}
-	/*public String login() {
-		return "manage/index.html";
 	}*/
+	public String login() {
+		return "login";
+	}
 	//这里要是之后登陆界面改回来
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ResponseBody
@@ -39,20 +39,25 @@ public class LoginController {
 			@RequestParam(value = "psw", required = false) String password
 			)
 	{
-		List<XT_USER> list=xT_USERService.getUserByUsername(username);
-		if(list!=null)
+		List<XT_USER> list=userService.getUserByLoginName(username);
+		if(list!=null && list.size()!=0)
 		{
 			XT_USER user=list.get(0);
+			//System.out.println(user.getXt_role().getRolename());
 			if(user.getPassword().equals(password.trim()))
 			{
+				session.setAttribute("session_loginname",user.getUsername());
+				session.setAttribute("session_userid",user.getUserid());
+				
+				
 				return JSONReturn.buildSuccessWithEmptyBody();
 			}
 			else
 			{
-				return JSONReturn.buildFailure(new String("密码错误"));
+				return JSONReturn.buildFailure(new String("账号或密码错误"));
 			}
 		}
-		return JSONReturn.buildFailureWithEmptyBody();
+		return JSONReturn.buildFailure(new String("账号或密码错误"));
 	}
 	
 }

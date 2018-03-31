@@ -1,4 +1,4 @@
-package cn.edu.zjut.acs.service;
+package cn.edu.zjut.acs.service.impl;
 
 import java.util.List;
 import java.util.Map;
@@ -12,9 +12,10 @@ import cn.edu.zjut.acs.mapper.LogMapper;
 import cn.edu.zjut.acs.mapper.RoleMapper;
 import cn.edu.zjut.acs.model.XT_LOG;
 import cn.edu.zjut.acs.model.XT_ROLE;
+import cn.edu.zjut.acs.service.RoleService;
 
 
-@Service
+@Service(value="RoleServiceImpl")
 public class RoleServiceImpl implements RoleService {
 
 	@Resource

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.zjut.acs.mapper.AreaMapper" >
+	
+	<resultMap type="cn.edu.zjut.acs.model.AREA" id="areaResult">
+	  <id column="areacode" property="areacode"/>
+	  <result column="areaname" property="areaname"/>
+	  <result column="supercode" property="supercode"/>
+	  <result column="addtime" property="addtime"/>
+	  
+	  <association property="area" javaType="cn.edu.zjut.acs.model.AREA">
+	  	<id column="supercode" property="areacode"/>
+	    <result column="areaname" property="areaname"/>
+	  </association>	   
+	</resultMap>
+
+	<sql id="cols">
+		areacode,areaname,supercode,arealevel,addtime
+	</sql>
+	
+  	<select id="getAreaByPK" resultType="cn.edu.zjut.acs.model.AREA" parameterType="java.lang.Integer">
+    	select <include refid="cols"/> from area where areacode = #{key}
+  	</select>
+  	
+  	<select id="getAllArea" resultMap="areaResult">
+    	select <include refid="cols"/> from area 
+  	</select>
+	
+	<select id="getAreaList" parameterType="java.util.Map" resultMap="areaResult">
+		select * from area x
+			<where>
+				<if test="superCode != null" >
+					and x.supercode = #{superCode}
+				</if>
+				<if test="areaCode != null" >
+					and x.areacode = #{areaCode}
+				</if>
+				<if test="areaname != null and areaname != ''" >
+					and x.areaname = #{areaname}
+				</if>
+				<if test="level != null" >
+					and x.arealevel = #{level}
+				</if>
+			</where>
+			order by x.areacode desc 	
+	</select>
+
+	<insert id="saveArea" useGeneratedKeys="true" keyProperty="areacode" parameterType="cn.edu.zjut.acs.model.AREA">
+    	insert into area (areacode, areaname, supercode,addtime,arealevel)
+        values (null, #{areaname},#{supercode}, now(),#{arealevel})
+    </insert>
+    
+    <update id="updateArea" parameterType="cn.edu.zjut.acs.model.AREA">
+    	update area m set areaname = #{areaname}, supercode = #{supercode}
+    	where areacode = #{areacode}
+    </update>
+    
+    <delete id="deleteArea" parameterType="cn.edu.zjut.acs.model.AREA">
+        delete from area where areacode = #{areacode}  
+    </delete>
+
+</mapper>

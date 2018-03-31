@@ -22,51 +22,23 @@
 <script>DD_belatedPNG.fix('*');</script>
 <![endif]-->
 
-<title>用户管理</title>
+<title>修改角色类型</title>
 </head>
 <body>
-<article class="page-container">
-	<form action="system-user-add" method="post" class="form form-horizontal" id="form-user-manage-add">
-		<div class="tabBar cl">
-			<span>添加用户信息</span>
-		</div>
+<article class="page-container" style="padding-left: 200px">
+	<form action="system-role-edit" method="post" class="form form-horizontal" id="form-system-role-edit">
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>角色类型：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<select class="select" size="1" id="roleid" name="roleid" style="width: 200px;height: 31px">
-					<option value="">--请选择--</option>
-					<c:forEach var="role" items="${roleList}">
-						<option value="${role.roleid}">${role.rolename}</option>
-					</c:forEach>
-				</select>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>角色类型编号：</label>
+			<div class="formControls col-xs-8 col-sm-3">
+				<input type="text" class="input-text" value="${role.roleid}"  id="roleid" name="roleid"placeholder="" readonly="readonly" style="width:200px">
 			</div>
 		</div>
-		
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>登录名：</label>
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>角色类型名称：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text" value="" placeholder="请输入登录名" id="username" name="username" style="width:200px">
+				<input type="text" class="input-text" value="${role.rolename}" placeholder="" id="rolename" name="rolename" style="width:200px">
 			</div>
-		</div>
-		
-		<div class="row cl">
-		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>登录密码：</label>
-		<div class="formControls col-xs-8 col-sm-9">
-			<input type="password" class="input-text" autocomplete="off" value="" placeholder="请输入密码" id="password" name="password" style="width:200px">
-		</div>
-		</div>
-		<div class="row cl">
-		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>确认密码：</label>
-		<div class="formControls col-xs-8 col-sm-9">
-			<input type="password" class="input-text" autocomplete="off"  placeholder="请再次输入密码" id="mm" name="mm" style="width:200px">
-		</div>
-		</div>
-		<!-- <div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>姓名：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text" value="" placeholder="请输入姓名" id="username" name="username" style="width:200px">
-			</div>
-		</div> -->
+		</div>		
 		<div class="row cl">
 			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
 				<button type="submit" class="btn btn-success radius" id="admin-role-save" name="admin-role-save"><i class="icon-ok"></i> 确定</button>
@@ -86,31 +58,35 @@
 <script type="text/javascript" src="../js/jquery.validation/1.14.0/validate-methods.js"></script>
 <script type="text/javascript" src="../js/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript">
-$(function(){
-	$("#form-user-manage-add").validate({
+$(function(){	
+	$("#form-system-role-edit").validate({
 		debug:true,
 		rules:{
-			roleid:{ required:true, },
-			username:{ required:true, maxLengthInCN: 30, remote: "check-loginname.html", checkENGNUM:true },
-			password:{required:true, maxLengthInCN: 30,isPwd:true,},
-			mm:{required:true,equalTo: "#password",isPwd:true,},
+			rolename:{ required:true, maxLengthInCN: 20,  
+				remote:{
+				    depends : function(element) {
+				        return element.value !== "${role.rolename}";
+				        },
+				        param : {
+				            url : "check-rolename.html",
+				            cache :false
+				        },
+				   },
+			    },
 		},
 		messages: {
-			roleid:{ required: "角色类型不能为空！", },
-			username:{ required: "登录名不能为空！", maxLengthInCN: "登录名不能超过30个字符！", remote:"该登录名已存在", checkENGNUM:"请输入正确的英文字母或数字" },
-			password:{ required: "登录密码不能为空！", maxLengthInCN: "登录密码不能超过30个字符！", isPwd:"以字母开头，长度在6-12之间，只能包含字符、数字和下划线" },
-			mm:{ required: "请确认登录密码", maxLengthInCN: "登录密码不能超过30个字符！",equalTo:"两次输入的密码不一致", isPwd:"以字母开头，长度在6-12之间，只能包含字符、数字和下划线" },
+			rolename:{ required: "请输入角色类型名称", maxLengthInCN: "最多输入20个字符,一个中文两个字符", remote: "角色名称已被使用"},
 		},
 		onkeyup:false,
 		focusCleanup:false,
 		success:"valid",
 		submitHandler:function(form){
 			$(form).ajaxSubmit({
-				    dataType : "json",
+					dataType : "json",
 					success: function(data){
 						if(data.head){
-							layer.msg("用户添加成功!",{icon:1,time:1000},function(){
-								parent.query();
+							layer.msg("角色类型修改成功!",{icon:1,time:1000},function(){
+								window.parent.location.reload();
 								var index = parent.layer.getFrameIndex(window.name);
 								parent.layer.close(index);
 							});
@@ -119,7 +95,7 @@ $(function(){
 								layer.msg("请先登录!",{icon:1,time:1000},function(){
 									window.parent.location.href = "../login.html";
 								});								
-							}else if(data.body == 'PERMISSION_DENIED') {
+							} else if(data.body == 'PERMISSION_DENIED') {
 								layer.msg("您无操作权限!",{icon:2,time:2000});
 							} else {
 								layer.msg(data.body,{icon:2,time:2000});
@@ -127,7 +103,7 @@ $(function(){
 						}
 					},
 					error: function(XmlHttpRequest, textStatus, errorThrown){
-						layer.msg('系统错误!',{icon:1,time:1000});
+						layer.msg('系统错误!'+XMLHttpRequest.status,{icon:1,time:1000});
 					}
 				});
 		}

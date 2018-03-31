@@ -17,8 +17,8 @@
 	http://www.springframework.org/schema/aop/spring-aop.xsd">
 	
     <context:property-placeholder location="classpath:config.properties" ignore-unresolvable="true"/>
-    <!-- <context:property-placeholder location="classpath:settings.properties" ignore-unresolvable="true"/>
-     -->
+    <context:property-placeholder location="classpath:settings.properties" ignore-unresolvable="true"/>
+     
      <context:component-scan base-package="cn.edu.zjut.acs" />
     
     <bean name="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">

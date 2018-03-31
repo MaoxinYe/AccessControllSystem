@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.zjut.acs.mapper.GatesMapper" >
+	
+	<resultMap type="cn.edu.zjut.acs.model.Gate" id="gatesResult">
+	  <id column="gatesid" property="gatesid"/>
+	  <result column="gatesname" property="gatesname"/>
+	  <result column="areacode" property="areacode"/>
+	  <result column="areacode2" property="areacode2"/>
+	  
+	  <result column="uniqueid" property="uniqueid"/>
+	  <result column="type" property="type"/>
+	  <result column="inorout" property="inorout"/>
+	   <result column="address" property="address"/>
+	  <result column="addtime" property="addtime"/>
+	  
+	  <association property="area" javaType="cn.edu.zjut.acs.model.AREA">
+	    <result column="areaname" property="areaname"/>
+	  </association>	   
+	</resultMap>
+
+	<sql id="cols">
+		gatesid,gatesname,areacode,areacode2,uniqueid,type,inorout,address,addtime
+	</sql>
+
+	<select id="getGatesByPK" resultType="cn.edu.zjut.acs.model.Gate" parameterType="java.lang.Integer">
+    	select <include refid="cols"/> from gates where gatesid = #{key}
+  	</select>
+
+	<select id="getGatesList" resultMap="gatesResult" parameterType="java.util.Map">
+    	select x.gatesid,x.gatesname,x.areacode,x.areacode,x.uniqueid,x.type,x.inorout,x.address,x.addtime,y.areaname
+    		from gates x,area y
+    	<where>
+			<if test="1==1">
+			 	x.areacode = y.areacode
+			</if>
+			<if test="areacode != null">
+			 	and x.areacode = #{areacode}
+			</if>
+			<if test="uniqueid != null and uniqueid != ''">
+			 	and x.uniqueid = #{uniqueid}
+			</if>
+			<if test="gatesname != null and gatesname != ''">
+			 	and x.gatesname = #{gatesname}
+			</if>
+			<if test="uniqueidNone != null and uniqueidNone != ''">
+			 	and (x.uniqueid is null or x.uniqueid = '')
+			</if>
+			<if test="inorout != null">
+			 	and x.inorout = #{inorout} 
+			</if>
+		</where>
+		order by x.areacode,x.gatesid desc 
+		<if test="pageCommon != null and pageCommon.startRow != null and pageCommon.pageSize != null ">
+			limit #{pageCommon.startRow},#{pageCommon.pageSize}
+		</if>
+    </select> 
+    
+    <select id="getTotalNumber" resultType="java.lang.Integer" parameterType="java.util.Map">
+    	select count(x.gatesid) from gates x,area y
+    	<where>
+			<if test="1==1">
+			 	x.areacode = y.areacode
+			</if>
+			<if test="areacode != null">
+			 	and x.areacode = #{uniqueid}
+			</if>
+			<if test="inorout != null">
+			 	and x.inorout = #{inorout} 
+			</if>
+			<if test="uniqueid != null and uniqueid != ''">
+			 	and x.uniqueid = #{areacode}
+			</if>
+		</where>
+    </select>  
+    
+    <insert id="saveGates" parameterType="cn.edu.zjut.acs.model.Gate">
+    	insert into gates (gatesid,gatesname,areacode,areacode2,uniqueid,type,inorout,address,addtime)
+        values (null, #{gatesname},#{areacode}, #{areacode2}, #{uniqueid}, #{type}, #{inorout},#{address}, now() )
+    </insert>
+    
+    <update id="updateGates" parameterType="cn.edu.zjut.acs.model.Gate">
+    	update gates m set 
+    		gatesname = #{gatesname},areacode = #{areacode},areacode2 = #{areacode2},uniqueid = #{uniqueid},type = #{type},inorout = #{inorout},address = #{address}   
+    	where gatesid = #{gatesid}
+    </update>
+    
+    
+    <delete id="deleteGates" parameterType="cn.edu.zjut.acs.model.Gate">
+        delete from gates where gatesid = #{gatesid}  
+    </delete>
+
+</mapper>

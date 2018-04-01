@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import cn.edu.zjut.acs.model.XT_USER;
 import cn.edu.zjut.acs.service.UserService;
 import cn.edu.zjut.acs.support.JSONReturn;
+import cn.edu.zjut.acs.support.ResourceBean;
 
 
 @Controller
@@ -23,6 +24,8 @@ public class LoginController {
 	
 	@Resource
 	private UserService userService;
+	@Resource
+	private ResourceBean resourceBean;
 	
 	@RequestMapping(value = "/login.html", method = RequestMethod.GET)
 	/*public ModelAndView login() {
@@ -48,8 +51,7 @@ public class LoginController {
 			{
 				session.setAttribute("session_loginname",user.getUsername());
 				session.setAttribute("session_userid",user.getUserid());
-				
-				
+				session.setAttribute("session_photoVirtualPath", resourceBean.getVirtualPath());
 				return JSONReturn.buildSuccessWithEmptyBody();
 			}
 			else

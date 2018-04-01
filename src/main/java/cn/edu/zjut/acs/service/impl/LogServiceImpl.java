@@ -1,9 +1,3 @@
-/** 
-* @Filename: ModuleService.java
-* @package: cn.com.itsea.acs.dao
-* Date: 2017年12月04日 下午2:14:49
-* Copyright: Copyright (c) 2017, 杭州海量信息技术有限公司  All Rights Reserved.
-*/
 package cn.edu.zjut.acs.service.impl;
 
 import java.util.HashMap;
@@ -20,13 +14,6 @@ import cn.edu.zjut.acs.service.LogService;
 import cn.edu.zjut.acs.support.PageCommon;
 
 
-/** 
- * @ClassName: ModuleService
- * @author  <a href="mailto:945922054@qq.com">余其刚</a> 
- * @date 创建时间：2017年12月04日 下午2:14:49
- * @version V1.0  
- * @since  JDK 1.7 
- */
 @Service
 public class LogServiceImpl implements LogService {
 	

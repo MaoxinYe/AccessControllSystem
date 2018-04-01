@@ -1,9 +1,3 @@
-/** 
-* @Filename: ModuleService.java
-* @package: cn.com.itsea.acs.dao
-* Date: 2017年12月04日 下午2:10:49
-* Copyright: Copyright (c) 2017, 杭州海量信息技术有限公司  All Rights Reserved.
-*/
 package cn.edu.zjut.acs.service;
 
 import java.util.List;
@@ -12,13 +6,6 @@ import java.util.Map;
 import cn.edu.zjut.acs.model.Module;
 import cn.edu.zjut.acs.model.XT_LOG;
 
-/** 
- * @ClassName: ModuleService
- * @author  <a href="mailto:945922054@qq.com">余其刚</a> 
- * @date 创建时间：2017年12月04日 下午2:10:49
- * @version V1.0  
- * @since  JDK 1.7 
- */
 public interface ModuleService {
 	/**
      * 根据主键查询模块信息

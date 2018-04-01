@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.zjut.acs.mapper.PersonnelMapper">
+
+  <resultMap type="cn.edu.zjut.acs.model.Personnel" id="personnelResult">
+    <id column="personnelid" property="personnelid" />
+    <result column="name" property="name" />
+    <result column="sex" property="sex" />
+    <result column="credentials" property="credentials" />
+    <result column="tel" property="tel" />
+    <!-- <result column="type" property="type" /> -->
+    <!-- <result column="cardid" property="cardid" /> -->
+    <result column="address" property="address" />
+    <result column="remarks" property="remarks" />
+ <!--    <result column="expirationdate" property="expirationdate" /> -->
+    <result column="addtime" property="addtime" />
+   <!--  <result column="status" property="status" /> -->
+    <result column="areacode" property="areacode" />
+    
+    <association property="area" javaType="cn.edu.zjut.acs.model.AREA">
+      <result column="areacode" property="areacode" />
+      <result column="areaname" property="areaname" />
+      <result column="supercode" property="supercode" />
+      <result column="addtime" property="addtime" />
+    </association>
+  </resultMap>
+  
+  <sql id="cols">
+  	personnelid,name,sex,credentials,tel,areacode,<!-- type,cardid, -->address,remarks,addtime<!-- ,expirationdate,status -->
+  </sql>
+  
+  <select id="getEntityByPK" resultMap="personnelResult" parameterType="java.lang.Integer">
+    select * from personnel p left join area a on p.areacode = a.areacode  where personnelid = #{personnelid}
+  </select>
+  
+  <select id="getPersonnelList" resultMap="personnelResult" parameterType="java.util.Map">
+    select <include refid="cols"></include> from personnel
+    <where> 
+    	<!-- 详细查询 -->
+		<if test="name != null and name != '' ">
+			and name = #{name}
+		</if>
+		<if test="tel != null and tel != '' ">
+			and tel = #{tel}
+		</if>
+		<!-- 模糊查询 -->
+		<if test="personnelName != null and personnelName != '' ">
+			and name like concat('%',#{personnelName},'%')
+		</if>
+		<if test="personnelTel != null and personnelTel != '' ">
+			and tel like concat('%',#{personnelTel},'%')
+		</if>
+		
+		<if test="credentials != null and credentials != '' ">
+			and credentials = #{credentials}
+		</if>
+		<!-- <if test="yxrq != null and yxrq != '' ">
+			<![CDATA[ and expirationdate >= date_format(now(),'%Y-%m-%d')]]>  
+		</if> 
+		<if test="cardid != null and cardid != '' ">
+			and cardid = #{cardid}
+		</if>
+		<if test="type != null">
+			and type = #{type}
+		</if>
+		<if test="status != null and status != '' ">
+			and status = #{status}
+		</if>
+		<if test="gtid != null and gtid != '' ">
+			<![CDATA[ and personnelid > #{gtid}]]>  
+		</if>
+		<if test="effectivePersonnel != null and effectivePersonnel != '' ">
+			and (type = 1 or type = 2 or (type = 3 <![CDATA[ and expirationdate >= date_format(now(),'%Y-%m-%d')]]> ))
+		</if>-->
+		order by personnelid
+		<if test="pageSize != null and pageSize != '' ">
+			limit 0,#{pageSize}
+		</if>
+	</where>
+  </select>
+  
+  <insert id="savePersonnel" useGeneratedKeys="true" keyProperty="personnelid" parameterType="cn.edu.zjut.acs.model.Personnel">
+	insert into personnel
+	(name,sex,credentials,tel,areacode,address,remarks,addtime)
+	values ( #{name}, #{sex}, #{credentials}, #{tel}, #{areacode},#{address}, #{remarks},  #{addtime})
+  </insert>
+  
+  <select id="getPersonnelPageList" resultMap="personnelResult" parameterType="java.util.Map">
+    select 
+    p.personnelid,
+    p.name,
+    p.sex,
+    p.credentials,
+    p.tel,
+    p.areacode,
+    p.address,
+    p.remarks,
+    p.addtime,
+    a.*
+    from personnel p,area a
+    <where> 
+    <if test="1==1 ">
+			p.areacode = a.areacode
+		</if>
+		<if test="name != null and name != '' ">
+			and p.name = #{name}
+		</if>
+		<if test="credentials != null and credentials != '' ">
+			and p.credentials = #{credentials}
+		</if>
+		<if test="areacode != null and areacode != '' ">
+			and p.areacode = #{areacode}
+		</if>
+		<!-- <if test="status != null and status != '' ">
+			and status = #{status}
+		</if>
+		<if test="expirationdate != null and expirationdate != '' ">
+			<![CDATA[ and p.expirationdate >= date_format(now(),'%Y-%m-%d')]]>  
+		</if>
+		<if test="cardid != null and cardid != '' ">
+			and p.cardid = #{cardid}
+		</if>
+		<if test="type != null">
+			and p.type = #{type}
+		</if> -->
+		<if test="tel != null and tel != '' ">
+			and p.tel = #{tel}
+		</if>
+		<!-- <if test="effectivePersonnel != null and effectivePersonnel != '' ">
+			and (p.type = 1 or p.type = 2 or p.type = 3)
+		</if> -->
+	</where>
+	order by p.addtime desc limit #{startindex},#{pagesize}
+  </select>
+  
+  <select id="getRowsCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+    select count(*) num from personnel p,area a
+    <where> 
+        <if test="1==1 ">
+			p.areacode = a.areacode
+		</if>
+		<if test="name != null and name != '' ">
+			and p.name = #{name}
+		</if>
+		<if test="credentials != null and credentials != '' ">
+			and p.credentials = #{credentials}
+		</if>
+		<if test="areacode != null and areacode != '' ">
+			and p.areacode = #{areacode}
+		</if>
+		<!-- <if test="expirationdate != null and expirationdate != '' ">
+			<![CDATA[ and p.expirationdate >= date_format(now(),'%Y-%m-%d')]]>  
+		</if>
+		<if test="cardid != null and cardid != '' ">
+			and p.cardid = #{cardid}
+		</if>
+		<if test="status != null and status != '' ">
+			and status = #{status}
+		</if>
+		<if test="type != null">
+			and p.type = #{type}
+		</if> -->
+		<if test="tel != null and tel != '' ">
+			and p.tel = #{tel}
+		</if>
+		<!-- <if test="effectivePersonnel != null and effectivePersonnel != '' ">
+			and (p.type = 1 or p.type = 2 or p.type = 3)
+		</if> -->
+	</where>
+  </select>
+  
+   <update id="updatePersonnel" parameterType="cn.edu.zjut.acs.model.Personnel">
+	update Personnel 
+	set name = #{name}, sex = #{sex}, credentials = #{credentials}, 
+	tel = #{tel}, areacode = #{areacode},
+	address = #{address}, remarks = #{remarks},
+	addtime = #{addtime}
+	where personnelid = #{personnelid}
+   </update>
+   
+   <delete id="deletePersonnel" parameterType="java.lang.Integer">
+    delete from personnel where personnelid = #{personnelid}
+   </delete>
+  
+</mapper>

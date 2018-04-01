@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.zjut.acs.mapper.FaceMapper">
+
+  <resultMap type="cn.edu.zjut.acs.model.Face" id="faceidResult">
+    <id column="faceid" property="faceid" />
+     <result column="path" property="path" />
+     <result column="facefeature" property="facefeature" />
+     <result column="faceidAddtime" property="addtime" />
+    
+    <association property="personnel" javaType="cn.edu.zjut.acs.model.Personnel">
+      <result column="personnelid" property="personnelid" />
+      <result column="name" property="name" />
+      <result column="sex" property="sex" />
+      <result column="credentials" property="credentials" />
+      <result column="tel" property="tel" />
+      <result column="areacode" property="areacode" />
+      <result column="address" property="address" />
+      <result column="remarks" property="remarks" />
+      <result column="personnelAddtime" property="addtime" />
+     </association>
+  </resultMap>
+  
+  <sql id="cols">
+  	faceid,personnelid,path,facefeature,addtime
+  </sql>
+  
+  <select id="getEntityByPK" resultType="cn.edu.zjut.acs.model.Face" parameterType="java.lang.Integer">
+    select * from face where faceid = #{faceid}
+  </select>
+  
+  <insert id="saveOfRegister">
+	insert into face (personnelid,path,feature,addtime)
+	values (#{personnelid}, #{path}, #{feature}, now())
+  </insert>
+  
+  <insert id="saveFaceid" useGeneratedKeys="true" keyProperty="faceid" parameterType="cn.edu.zjut.acs.model.Face">
+	insert into face 
+	(personnelid,path,facefeature,addtime)
+	values (#{personnelid}, #{path}, #{facefeature}, #{addtime})
+  </insert>
+  
+  <select id="findFaceidList" resultMap="faceidResult" parameterType="java.util.Map">
+	select 
+	   i.personnelid,i.name,i.sex,i.credentials,i.tel,i.areacode,i.address,i.remarks,i.addtime as personnelAddtime,
+	   j.faceid,j.path,j.facefeature,j.addtime as faceidAddtime
+	from personnel i, face j
+	  <where>
+	    <if test="1==1">
+	        and i.personnelid = j.personnelid
+	    </if>    
+		<!-- <if test="yxrq != null and yxrq != '' ">
+			<![CDATA[ and i.expirationdate >= date_format(now(),'%Y-%m-%d')]]>  
+		</if> -->
+		<if test="areacode != null and areacode != '' ">
+			and i.areacode = #{areacode}
+		</if>
+		<!-- <if test="status != null and status != '' ">
+			and i.status = #{status}
+		</if> 
+		<if test="effectivePerson != null and effectivePerson != '' ">
+			and (i.type = 1 or (i.type = 3 <![CDATA[ and i.expirationdate >= date_format(now(),'%Y-%m-%d')]]>))
+		</if>
+		<if test="type != null and type != '' ">
+			and i.type = #{type}
+		</if>-->
+	  </where>
+	   order by i.personnelid desc
+  </select> 
+	
+  <select id="getFaceidList" resultType="cn.edu.zjut.acs.model.Face" parameterType="java.util.Map">
+	select <include refid="cols"/> from face
+	  <where>
+		<if test="personnelid != null and personnelid != '' ">
+			and personnelid = #{personnelid}
+		</if>	  
+	  </where>
+	   order by faceid desc
+  </select> 
+  
+ <delete id="deleteFace" parameterType="java.lang.Integer">
+   delete from face where faceid = #{faceid}
+ </delete>
+ 
+ <update id="updateFaceid" parameterType="cn.edu.zjut.acs.model.Face">
+   update face 
+   set personnelid = #{personnelid},
+   path = #{path},
+   facefeature = #{facefeature},
+   addtime = #{addtime}
+   where faceid = #{faceid}
+ </update>
+  
+</mapper>

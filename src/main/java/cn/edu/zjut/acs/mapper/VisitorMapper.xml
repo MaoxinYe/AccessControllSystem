@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.zjut.acs.mapper.VisitorMapper" >
+
+<sql id="cols">
+	visitorid,name,sex,credentials,tel,personnel_name,personnel_tel,personnel_id,path,facefeature,remarks,addtime,accesstime
+</sql>
+
+  <select id="getVisitorList" resultType="cn.edu.zjut.acs.model.Visitor" parameterType="java.util.Map">
+    select <include refid="cols"/> from visitor 
+	<where> 
+		<!-- 详细查询 -->
+		<if test="name != null and name != '' ">
+			and name = #{name}
+		</if>
+		<!-- 模糊查询 -->
+		<if test="visitorName != null and visitorName != '' ">
+			and name like concat('%',#{visitorName},'%')
+		</if>
+		<if test="credentials != null and credentials != '' ">
+			and credentials = #{credentials}
+		</if>
+		<if test="tel != null and tel != '' ">
+			and tel = #{tel}
+		</if>
+		<if test="personnelid != null and personnelid != '' ">
+			and personnel_id = #{personnelid}
+		</if>
+		<if test="personnel_name != null and personnel_name != '' ">
+			and personnel_name = #{personnel_name}
+		</if>
+		<if test="personnel_tel != null and personnel_tel != '' ">
+			and personnel_tel = #{personnel_tel}
+		</if>
+		<if test="accesstime != null">
+			<![CDATA[ and date_format(#{accesstime},'%Y-%m-%d') <> date_format(accesstime,'%Y-%m-%d')  ]]>  
+		</if>
+		<!-- <if test="status != null and status != '' ">
+			and status = #{status}
+		</if> -->
+		<!-- <if test="accrsstime != null">
+			<![CDATA[ and date_format(#{accrsstime},'%Y-%m-%d') >= date_format(starttime,'%Y-%m-%d') and date_format(endtime,'%Y-%m-%d') >= date_format(#{accrsstime},'%Y-%m-%d') ]]>  
+		</if> -->
+		<!-- <if test="areacode != null and areacode != '' ">
+			and areacode = #{areacode}
+		</if>
+		<if test="effective != null and effective != '' ">
+			<![CDATA[ and status <> 3 ]]>  
+		</if> -->
+	</where>
+	order by visitorid desc
+	<if test="pageCommon != null and pageCommon.startRow != null and pageCommon.pageSize != null ">
+		limit #{pageCommon.startRow},#{pageCommon.pageSize}
+	</if>
+  </select>
+  
+  <select id="getTotalNumber" resultType="java.lang.Integer" parameterType="java.util.Map">
+    select count(visitorid) from visitor 
+	<where> 
+		<!-- 详细查询 -->
+		<if test="name != null and name != '' ">
+			and name = #{name}
+		</if>
+		<!-- 模糊查询 -->
+		<if test="visitorName != null and visitorName != '' ">
+			and name like concat('%',#{visitorName},'%')
+		</if>
+		<if test="credentials != null and credentials != '' ">
+			and credentials = #{credentials}
+		</if>
+		<if test="tel != null and tel != '' ">
+			and tel = #{tel}
+		</if>
+		<if test="personnelid != null and personnelid != '' ">
+			and personnel_id = #{personnelid}
+		</if>
+		<if test="accesstime != null">
+			<![CDATA[ and date_format(#{accesstime},'%Y-%m-%d') <> date_format(accesstime,'%Y-%m-%d')  ]]>  
+		</if>
+		<!-- <if test="status != null and status != '' ">
+			and status = #{status}
+		</if>
+		<if test="accrsstime != null">
+			<![CDATA[ and date_format(#{accrsstime},'%Y-%m-%d') >= date_format(starttime,'%Y-%m-%d') and date_format(endtime,'%Y-%m-%d') >= date_format(#{accrsstime},'%Y-%m-%d') ]]>  
+		</if>
+		<if test="areacode != null and areacode != '' ">
+			and areacode = #{areacode}
+		</if> 
+		<if test="effective != null and effective != '' ">
+			<![CDATA[ and status <> 3 ]]>  
+		</if> -->
+	</where>
+  </select>
+  
+  <insert id="saveVisitor" useGeneratedKeys="true" keyProperty="visitorid" parameterType="cn.edu.zjut.acs.model.Visitor">
+  	insert into visitor(visitorid,name,sex,credentials,tel,personnel_name,personnel_tel,personnel_id,path,facefeature,remarks,addtime,accesstime)
+  		values(null,#{name},#{sex},#{credentials},#{tel},#{personnel_name},#{personnel_tel},#{personnel_id},#{path},#{facefeature},#{remarks},now(),#{accesstime})
+  </insert>
+  
+  <select id="getVisitorByPK" parameterType="java.lang.Integer" resultType="cn.edu.zjut.acs.model.Visitor">
+  	select <include refid="cols"/> from visitor where visitorid = #{key}
+  </select>
+  
+  <update id="updateVisitor" parameterType="cn.edu.zjut.acs.model.Visitor" >
+  	update visitor set 
+  		name = #{name},sex = #{sex},credentials = #{credentials},tel = #{tel},personnel_name = #{personnel_name},
+  		personnel_tel = #{personnel_tel},personnel_id = #{personnel_id},path = #{path},
+  		facefeature = #{facefeature},remarks = #{remarks},accesstime=#{accesstime}
+  	where visitorid = #{visitorid}
+  </update>
+  
+  <delete id="deleteVisitor" parameterType="cn.edu.zjut.acs.model.Visitor" >
+  	 delete from visitor where visitorid = #{visitorid}  
+  </delete>
+
+</mapper>

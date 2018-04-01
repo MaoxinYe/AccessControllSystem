@@ -31,16 +31,15 @@
 		<div class="tabBar cl">
 			<span>修改菜单信息</span>
 		</div>
+		
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>所属模块：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<span class="select-box">
 				<select class="select" id="supercode" name="supercode" style="width: 200px;height: 31px">
 					<c:forEach var="module" items="${moduleList}">
 						<option value="${module.modulecode}" <c:if test="${menu.supercode==module.modulecode}">selected="selected"</c:if> >${module.modulename}</option>
 					</c:forEach>
 				</select>
-				</span>				
 			</div>
 		</div>
 		<div class="row cl">

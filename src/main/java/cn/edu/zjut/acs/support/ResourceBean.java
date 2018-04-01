@@ -8,6 +8,10 @@ import org.springframework.stereotype.Component;
 @Component(value = "ResourceBean")
 public class ResourceBean{
 	
+	@Value("${setting.photo.virtual.path}")
+	private String virtualPath;
+	@Value("${setting.photo.physical.path}")
+	private String physicalPath;
 	@Value("${setting.area_num}")
 	private Integer areaNum;	
 	@Value("${setting.area_1}")
@@ -25,6 +29,14 @@ public class ResourceBean{
 	
 	
 
+	
+	public String getVirtualPath() {
+		return virtualPath;
+	}
+
+	public String getPhysicalPath() {
+		return physicalPath;
+	}
 
 	public Integer getAreaNum() {
 		return areaNum;

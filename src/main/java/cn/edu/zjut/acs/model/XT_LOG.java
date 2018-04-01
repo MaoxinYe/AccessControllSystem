@@ -1,9 +1,3 @@
-/** 
-* @Filename: YW_PERSONNEL.java
-* @package: cn.com.itsea.acs.model
-* Date: 2017年11月30日 下午10:22:22
-* Copyright: Copyright (c) 2017, 杭州海量信息技术有限公司  All Rights Reserved.
-*/
 package cn.edu.zjut.acs.model;
 
 import java.io.Serializable;

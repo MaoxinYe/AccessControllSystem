@@ -27,7 +27,7 @@
 <body>
 <article class="page-container">
 	<form action="system-menubar-edit" method="post" class="form form-horizontal" id="form-system-menubar-edit">
-	<input type="hidden" id="id" name="id" value="${menu.modulecode}"/>
+	<input type="hidden" id="id" name="id" value="${menu.moduleid}"/>
 		<div class="tabBar cl">
 			<span>修改菜单信息</span>
 		</div>

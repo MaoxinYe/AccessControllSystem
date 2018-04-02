@@ -60,4 +60,10 @@ public class ModuleServiceImpl implements ModuleService {
 		//记录日志
 		logMapper.saveLog(log);
 	}
+
+	@Override
+	public Module getEntityByModuleid(Integer moduleid) {
+		// TODO Auto-generated method stub
+		return this.moduleMapper.getEntityByMoudleid(moduleid);
+	}
 }

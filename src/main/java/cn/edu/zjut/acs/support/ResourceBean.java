@@ -26,10 +26,15 @@ public class ResourceBean{
 	private String area_5;
 	@Value("${setting.area_6}")
 	private String area_6;
-	
+	@Value("${setting.record.type}")
+	private Integer recordType;
 	
 
 	
+	public Integer getRecordType() {
+		return recordType;
+	}
+
 	public String getVirtualPath() {
 		return virtualPath;
 	}

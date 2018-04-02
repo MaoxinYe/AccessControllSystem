@@ -90,22 +90,6 @@
 				</select>
 			</div>
 		</div>
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>人员类型：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<select onchange="opear()" class="select" id="type" name="type" style="width: 200px;height: 31px">
-					<c:forEach var="type" items="${personnelTypeList}">
-		 				<option value="${type.id}" <c:if test="${type.id == personnel.type}">selected="selected"</c:if>>${type.name}</option>
-					</c:forEach>
-				</select>
-			</div>
-		</div>
-		<div class="row cl" id="disexpiration" style="display:none;" >
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>截止日期：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" name="expirationdate" id="expirationdate" value="<fmt:formatDate value="${personnel.expirationdate}" pattern="yyyy-MM-dd"/>" onfocus="WdatePicker({ dateFmt:'yyyy-MM-dd ' })" style="width: 200px" onfocus="WdatePicker({ dateFmt:'yyyy-MM-dd ' })" class="input-text Wdate" />
-			</div>
-		</div>
 <%-- 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>门禁卡编号：</label>
 			<div class="formControls col-xs-8 col-sm-9">
@@ -134,18 +118,18 @@
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>人员照片：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input id="picpath" name="picpath" type="hidden" style="width:170px" /> 
-				<a title="拍照" href="javascript:;" style="line-height:1.6em;margin-top:" onclick="personnel_modeling('人员拍摄标准照','')" class="btn btn-success" style="text-decoration:none">前往拍照</a>
-			</div>
-		</div>
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>人员照片：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-			<input type="file" multiple name="file" id="file" style="width:150px" onclick="clear()">
+			<input type="file" multiple name="file" id="file" style="width:150px" onclick="clear()" onchange="PreviewImage(this);">
 			</div>
 			<div class="c-red">目前本系统仅支持.jpg格式的照片</div>
 		</div>
-		
+		<div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">照片预览：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <div id="imgPreview" style="width:171px;height:210px">
+            <img id="img1" src="${session_photoVirtualPath}${face.path}" width="171px" height="210px" alt="预览"/>
+            </div>
+        </div>
+        </div>
 		<div class="row cl">
 			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
 				<button type="submit" class="btn btn-success radius" id="admin-role-save" name="admin-role-save"><i class="icon-ok"></i> 确定</button>
@@ -167,6 +151,20 @@
 <script type="text/javascript" src="../js/jquery.validation/1.14.0/validate-methods.js"></script>
 <script type="text/javascript" src="../js/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript">
+function PreviewImage(imgFile){
+	var path;
+	if(document.all){//IE
+	    imgFile.select();
+		$("#admin-role-save").focus();
+	    path = document.selection.createRange().text;
+	    document.getElementById("imgPreview").innerHTML="";
+	    document.getElementById("imgPreview").style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled='true',sizingMethod='scale',src=\"" + path + "\")";//使用滤镜效果
+	} else {//FF
+	    path=window.URL.createObjectURL(imgFile.files[0]);// FF 7.0以上
+	    document.getElementById("imgPreview").innerHTML = "<img id='img1' width='171px' height='210px' src='"+path+"'/>";
+	}
+}
+
 /*清空拍摄的照片*/
 function clear(flag) {
 	//清除拍摄的人员照片
@@ -192,13 +190,7 @@ function clear(flag) {
 		url = 'personnel-modeling.html';
 		layer_show(title, url, 800, 650);
 	}
-	//外聘人员显示截止日期
-	$(document).ready(function(){
-		var zt = "${personnel.type}";
-		if(zt==3){
-			document.getElementById("disexpiration").style.display="";//显示
-		}
-	});
+	
 	
 	$(function() {
 		$("#form-personnel-edit").validate(

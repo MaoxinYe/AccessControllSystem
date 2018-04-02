@@ -7,13 +7,21 @@ import java.util.Date;
 public class Module implements Serializable {
 
 	private static final long serialVersionUID = -2959522088459778056L;
-	
+	private Integer moduleid;
 	private Integer modulecode;
 	private String modulename;
 	private Integer supercode;
 	private String modulepage;
 	private Integer modulelevel;
 	private Date addtime;
+	
+	
+	public Integer getModuleid() {
+		return moduleid;
+	}
+	public void setModuleid(Integer moduleid) {
+		this.moduleid = moduleid;
+	}
 	public Integer getModulecode() {
 		return modulecode;
 	}

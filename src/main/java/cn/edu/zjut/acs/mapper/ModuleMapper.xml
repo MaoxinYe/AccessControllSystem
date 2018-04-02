@@ -3,7 +3,8 @@
 <mapper namespace="cn.edu.zjut.acs.mapper.ModuleMapper">
 
   <resultMap type="cn.edu.zjut.acs.model.Module" id="moduleResult">
-    <id column="modulecode" property="modulecode" />
+    <id column="moduleid" property="moduleid" />
+    <result column="modulecode" property="modulecode" />
     <result column="modulename" property="modulename" />
     <result column="supercode" property="supercode" />
     <result column="modulepage" property="modulepage" />
@@ -26,12 +27,15 @@
     </delete>
     
    <update id="updateModule" parameterType="cn.edu.zjut.acs.model.Module">
-    	update jc_module m set modulename = #{modulename}, supercode = #{supercode}, modulepage = #{modulepage}  
-    	where modulecode = #{modulecode}
+    	update jc_module m set modulecode= #{modulecode}, modulename = #{modulename}, supercode = #{supercode}, modulepage = #{modulepage}  
+    	where moduleid = #{moduleid}
    </update>
   
   <select id="getEntityByPK" resultType="cn.edu.zjut.acs.model.Module" parameterType="java.lang.Integer">
     select * from jc_module where modulecode = #{modulecode}
+  </select>
+  <select id="getEntityByMoudleid" resultType="cn.edu.zjut.acs.model.Module" parameterType="java.lang.Integer">
+    select * from jc_module where moduleid = #{moduleid}
   </select>
   
     <select id="getModuleByModulename" resultType="cn.edu.zjut.acs.model.Module" parameterType="java.lang.String">

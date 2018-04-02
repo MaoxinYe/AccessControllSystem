@@ -37,6 +37,7 @@
     select <include refid="cols"></include> from personnel
     <where> 
     	<!-- 详细查询 -->
+    	1=1 
 		<if test="name != null and name != '' ">
 			and name = #{name}
 		</if>
@@ -82,7 +83,7 @@
   <insert id="savePersonnel" useGeneratedKeys="true" keyProperty="personnelid" parameterType="cn.edu.zjut.acs.model.Personnel">
 	insert into personnel
 	(name,sex,credentials,tel,areacode,address,remarks,addtime)
-	values ( #{name}, #{sex}, #{credentials}, #{tel}, #{areacode},#{address}, #{remarks},  #{addtime})
+	values ( #{name}, #{sex}, #{credentials}, #{tel}, #{areacode},#{address}, #{remarks},  now())
   </insert>
   
   <select id="getPersonnelPageList" resultMap="personnelResult" parameterType="java.util.Map">

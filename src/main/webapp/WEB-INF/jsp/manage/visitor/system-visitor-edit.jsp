@@ -21,7 +21,6 @@
 <script type="text/javascript" src="../js/DD_belatedPNG_0.0.8a-min.js" ></script>
 <script>DD_belatedPNG.fix('*');</script>
 <![endif]-->
-
 <title>访客信息</title>
 </head>
 <body>
@@ -34,7 +33,7 @@
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>访客姓名：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text" value="${visitor.name}" placeholder="" id="name" name="name" style="width:200px">
+				<input type="text" class="input-text" value="${visitor.name}" placeholder="" id="name" name="name" style="width:200px" disabled="true">
 			</div>
 		</div>
 		<div class="row cl">
@@ -63,7 +62,7 @@
 		<div class="row cl">
 		<label class="form-label col-xs-4 col-sm-3">访问时间：</label>
 		<div class="formControls col-xs-8 col-sm-9">
-			<input type="text" style="width:160px" placeholder="选择访问开始时间" id="startTime" name="startTime" value="${startTime}" onfocus="WdatePicker()" class="input-text Wdate">
+			<input type="text" style="width:160px" placeholder="选择访问时间" id="startTime" name="accesstime" value="${accesstime }" onfocus="WdatePicker()" class="input-text Wdate">
          	<%-- --
         	<input type="text" style="width:160px" placeholder="选择访问结束时间" id="endTime" name="endTime" value="${endTime}" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'startTime\')}'})" class="input-text Wdate"> --%>
 		</div>

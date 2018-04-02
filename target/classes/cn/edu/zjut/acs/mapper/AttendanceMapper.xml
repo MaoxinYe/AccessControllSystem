@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.zjut.acs.mapper.AttendanceMapper" >
+	
+	<sql id="cols">
+		id,personnel_id,personnel_name,status,createtime,starttime,endtime
+	</sql>
+	
+	<select id="getAttendanceByPK" parameterType="java.lang.Integer" resultType="cn.edu.zjut.acs.model.Attendance">
+		select <include refid="cols"/> from attendance where id = #{id}
+	</select>
+	
+	<select id="getAttendanceList" parameterType="java.util.Map" resultType="cn.edu.zjut.acs.model.Attendance">
+		select <include refid="cols"/> from attendance
+			<where>
+				<if test="today != null and today != ''">
+					and createtime = date_format(now(),'%Y-%m-%d')
+				</if>
+				<if test="personnel_name != null and personnel_name != ''">
+					and personnel_name like concat('%',#{personnel_name},'%')
+				</if>
+				<if test="starttime != null and starttime != ''">
+					<![CDATA[ and date_format(createtime,'%Y-%m-%d') >= date_format(#{starttime},'%Y-%m-%d')]]>  
+				</if>
+				<if test="endtime != null and endtime != ''">
+					<![CDATA[ and date_format(#{endtime},'%Y-%m-%d') >= date_format(createtime,'%Y-%m-%d') ]]>  
+				</if>
+				<if test="status != null">
+					and status = #{status}
+				</if>
+			</where>
+			ORDER BY createtime DESC 
+		<if test="pageCommon != null and pageCommon.startRow != null and pageCommon.pageSize != null ">
+			limit #{pageCommon.startRow},#{pageCommon.pageSize}
+		</if>
+	</select>
+	
+	<select id="getTotalNumber" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(id) from attendance
+			<where>
+				<if test="today != null and today != ''">
+					and createtime = date_format(now(),'%Y-%m-%d')
+				</if>
+				<if test="personnel_name != null and personnel_name != ''">
+					and personnel_name like concat('%',#{personnel_name},'%')
+				</if>
+				<if test="starttime != null and starttime != ''">
+					<![CDATA[ and date_format(createtime,'%Y-%m-%d') >= date_format(#{starttime},'%Y-%m-%d')]]>  
+				</if>
+				<if test="endtime != null and endtime != ''">
+					<![CDATA[ and date_format(#{endtime},'%Y-%m-%d') >= date_format(createtime,'%Y-%m-%d') ]]>  
+				</if>
+				<if test="status != null">
+					and status = #{status}
+				</if>
+			</where>
+	</select>
+	
+	<insert id="saveAttendance" parameterType="cn.edu.zjut.acs.model.Attendance">
+		insert into attendance(id,personnel_id,personnel_name,status,createtime,starttime,endtime)
+			values(null,#{personnel_id},#{personnel_name},#{status},now(),#{starttime},#{endtime})
+	</insert>
+	
+	<update id="updateAttendance" parameterType="cn.edu.zjut.acs.model.Attendance">
+		update attendance set status = #{status},starttime=#{starttime},endtime = #{endtime} where id = #{id}
+	</update>
+	
+	<select id="getAttendanceStatistics" parameterType="java.util.Map" resultType="cn.edu.zjut.acs.dto.AttendanceStatisticsDTO">
+		select a.createtime,a.personnel_id,a.personnel_name,a.totalNum,b.abnormalNum,c.earlyLateNum,d.absenceNum,e.normalNum,f.lateNum,g.earlyNum,h.outNum,i.leaveNum,j.offNum from 
+		(select personnel_id,personnel_name,count(personnel_id) as totalNum,createtime from attendance group by personnel_id) as a 
+		left join
+		(select personnel_id,count(personnel_id) as abnormalNum from attendance where status = -3 group by personnel_id) b 
+		on a.personnel_id = b.personnel_id left join 
+		(select personnel_id,count(personnel_id) as earlyLateNum from attendance where status = -2 group by personnel_id) c
+		on a.personnel_id = c.personnel_id left join 
+		(select personnel_id,count(personnel_id) as absenceNum from attendance where status = -1 group by personnel_id) d
+		on a.personnel_id = d.personnel_id left join 
+		(select personnel_id,count(personnel_id) as normalNum from attendance where status = 0 group by personnel_id) e
+		on a.personnel_id = e.personnel_id left join 
+		(select personnel_id,count(personnel_id) as lateNum from attendance where status = 1 group by personnel_id) f
+		on a.personnel_id = f.personnel_id left join 
+		(select personnel_id,count(personnel_id) as earlyNum from attendance where status = 2 group by personnel_id) g
+		on a.personnel_id = g.personnel_id left join 
+		(select personnel_id,count(personnel_id) as outNum from attendance where status = 3 group by personnel_id) h
+		on a.personnel_id = h.personnel_id left join 
+		(select personnel_id,count(personnel_id) as leaveNum from attendance where status = 4 group by personnel_id) i
+		on a.personnel_id = i.personnel_id left join 
+		(select personnel_id,count(personnel_id) as offNum from attendance where status = 5 group by personnel_id) j
+		on a.personnel_id = j.personnel_id 
+			<where>
+				<if test="personnel_name != null and personnel_name != ''">
+					personnel_name = #{personnel_name}
+				</if>
+				<if test="starttime != null and starttime != ''">
+					<![CDATA[ and date_format(a.createtime,'%Y-%m-%d') >= date_format(#{starttime},'%Y-%m-%d')]]>  
+				</if>
+				<if test="endtime != null and endtime != ''">
+					<![CDATA[ and date_format(a.createtime,'%Y-%m-%d') <= date_format(#{endtime},'%Y-%m-%d')]]>  
+				</if>
+			</where>
+		ORDER BY a.personnel_id DESC 
+		<if test="pageCommon != null and pageCommon.startRow != null and pageCommon.pageSize != null ">
+			limit #{pageCommon.startRow},#{pageCommon.pageSize}
+		</if>
+	</select>
+	
+	<select id="getStatisticsTotalNum" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(a.personnel_id) from 
+		(select personnel_id,personnel_name,count(personnel_id) as totalNum,createtime from attendance group by personnel_id) as a 
+		left join
+		(select personnel_id,count(personnel_id) as abnormalNum from attendance where status = -3 group by personnel_id) b 
+		on a.personnel_id = b.personnel_id left join 
+		(select personnel_id,count(personnel_id) as earlyLateNum from attendance where status = -2 group by personnel_id) c
+		on a.personnel_id = c.personnel_id left join 
+		(select personnel_id,count(personnel_id) as absenceNum from attendance where status = -1 group by personnel_id) d
+		on a.personnel_id = d.personnel_id left join 
+		(select personnel_id,count(personnel_id) as normalNum from attendance where status = 0 group by personnel_id) e
+		on a.personnel_id = e.personnel_id left join 
+		(select personnel_id,count(personnel_id) as lateNum from attendance where status = 1 group by personnel_id) f
+		on a.personnel_id = f.personnel_id left join 
+		(select personnel_id,count(personnel_id) as earlyNum from attendance where status = 2 group by personnel_id) g
+		on a.personnel_id = g.personnel_id left join 
+		(select personnel_id,count(personnel_id) as outNum from attendance where status = 3 group by personnel_id) h
+		on a.personnel_id = h.personnel_id left join 
+		(select personnel_id,count(personnel_id) as leaveNum from attendance where status = 4 group by personnel_id) i
+		on a.personnel_id = i.personnel_id left join 
+		(select personnel_id,count(personnel_id) as offNum from attendance where status = 5 group by personnel_id) j
+		on a.personnel_id = j.personnel_id 
+			<where>
+				<if test="personnel_name != null and personnel_name != ''">
+					a.personnel_name = #{personnel_name}
+				</if>
+				<if test="starttime != null and starttime != ''">
+					<![CDATA[ and date_format(a.createtime,'%Y-%m-%d') >= date_format(#{starttime},'%Y-%m-%d')]]>  
+				</if>
+				<if test="endtime != null and endtime != ''">
+					<![CDATA[ and date_format(a.createtime,'%Y-%m-%d') <= date_format(#{endtime},'%Y-%m-%d')]]>  
+				</if>
+			</where>
+	</select>
+	
+</mapper>

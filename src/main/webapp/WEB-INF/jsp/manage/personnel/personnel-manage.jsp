@@ -37,27 +37,14 @@
     <form id="personnelManage" action="personnel-manage.html" method="post">
     <div class="text-c" style="text-align:left">
         人员姓名：
-        <input type="text" class="input-text" style="width:160px" placeholder="输入访客姓名" id="name" name="name" value="${conditions.name}">
+        <input type="text" class="input-text" style="width:160px" placeholder="输入人员姓名" id="name" name="name" value="${conditions.name}">
         证件号码：
         <input type="text" class="input-text" style="width:160px" placeholder="输入证件号码" id="credentials" name="credentials" value="${conditions.credentials}">
-       	人员类型：
-		<select class="select" id="type" name="type" style="width: 200px;height: 31px">
-			<option value="">请选择人员类型</option>
-		 	<c:forEach var="type" items="${personnelTypeList}">
-		 		<option value="${type.id}">${type.name}</option>
-			</c:forEach>
-		</select>
-		<br/>
-		人员状态：
-		<select class="select" id="status" name="status" style="width: 200px;height: 31px">
-		 	<option value="1">有效人员</option>
-		 	<option value="0">无效人员</option>
-		</select>
-		所属${area}：
+      所属${area}：
 		<select class="select" id="areacode" name="areacode" style="width: 200px;height: 31px">
 			<option value="">请选择所属${area}</option>
 		 	<c:forEach var="area" items="${areaList}">
-		 		<option value="${area.areacode}">${area.areaname}</option>
+		 		<option value="${area.areacode}" <c:if test="${area.areacode==conditions.areacode}">selected="selected"</c:if> >${area.areaname}</option>
 			</c:forEach>
 		</select>
 		
@@ -76,11 +63,10 @@
 		<span class="l">
 		<a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
 		<a class="btn btn-primary radius" onclick="personnel_operation('添加人员','personnel-add.html')" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i> 添加人员</a>
-		<a title="Excel模板下载" href="personnel-excel-export.html" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe640;</i>Excel模板下载</a>
+		<!-- <a title="Excel模板下载" href="personnel-excel-export.html" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe640;</i>Excel模板下载</a>
 		<a href="javascript:;" onclick="personnel_operation('人员Excel导入','personnel-excel-import.html','','300')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe645;</i> 人员Excel信息导入</a>
 		<a href="javascript:;" onclick="personnel_operation('人员照片导入','personnel-photo-import.html','','300')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe645;</i> 人员照片导入</a>
-	    <a title="海量拍照质量检测控件下载" href="hl-detectocx-download.html" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe640;</i>海量拍照质量检测控件下载</a>
-		</span> <span class="r">共有数据：<strong>${pageMap.page.totalRows}</strong> 条</span>
+		 --></span> <span class="r">共有数据：<strong>${pageMap.page.totalRows}</strong> 条</span>
 	</div>
 	<div class="mt-20">
 	<div class="dataTables_wrapper no-footer" id="DataTables_Table_0_wrapper">
@@ -94,8 +80,6 @@
 					<th>证件号</th>
 					<th>联系电话</th>
 					<th>所属${area}</th>
-					<th>人员类型</th>
-					<th>有效期</th>
 					<!-- <th>人员状态</th> -->
 					<th width="100">操作</th>
 				</tr>
@@ -113,23 +97,10 @@
 					<td>${personnel.credentials}</td>
 					<td>${personnel.tel}</td>
 					<td>${personnel.area.areaname}</td>
-					<td>
-					<c:forEach var="type" items="${personnelTypeList}">
-		 				<c:if test="${type.id == personnel.type}">${type.name}</c:if>
-					</c:forEach>
-					</td>
-					<td>
-						<fmt:formatDate value="${personnel.expirationdate}" pattern="yyyy-MM-dd"/>
-					</td>
 					<%-- <td>${personnel.status == 0 ? "无效" : "有效"}</td> --%>
 					<td class="f-14">
 					<a title="编辑" href="javascript:;" onclick="personnel_operation('人员信息修改','personnel-edit.html?id='+${personnel.personnelid})" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
-					<c:if test="${personnel.status==1}">
 					<a title="删除" href="javascript:;" onclick="personnel_del(this, ${personnel.personnelid})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
-					</c:if>
-					<c:if test="${personnel.status==0}">
-					<a title="恢复有效状态" href="javascript:;" onclick="personnel_return(this, ${personnel.personnelid})" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
-					</c:if>
 					</td>
 				</tr>
 			</c:forEach>																								

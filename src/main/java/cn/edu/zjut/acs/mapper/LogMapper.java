@@ -5,15 +5,6 @@ import java.util.Map;
 
 import cn.edu.zjut.acs.model.XT_LOG;
 
-
-/** 
- * @ClassName: FaceidMapper
- * @author  <a href="mailto:945922054@qq.com">余其刚</a> 
- * @date 创建时间：2017年12月01日 下午3:16:42 
- * @version V1.0  
- * @since  JDK 1.7 
- */
-
 public interface LogMapper {
 	
 	/**

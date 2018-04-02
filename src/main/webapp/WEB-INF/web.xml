@@ -23,7 +23,9 @@
        org.springframework.web.context.ContextLoaderListener
       </listener-class>
      </listener>
-     
+    <listener>
+		<listener-class>cn.edu.zjut.acs.support.DataTaskListener</listener-class>
+	</listener>
      
 	<context-param>
 		<param-name>log4jConfigLocation</param-name>

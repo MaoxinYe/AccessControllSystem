@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.zjut.acs.mapper.RecordMapper">
+
+  <resultMap type="cn.edu.zjut.acs.model.Record" id="recordResult">
+    <id column="recordid" property="recordid" />
+    <result column="inorout" property="inorout" />
+    <result column="path" property="path" />
+    <result column="score" property="score" />
+    <result column="createtime" property="createtime" />
+    
+    <association property="gates" javaType="cn.edu.zjut.acs.model.Gate">
+      <id column="gatesid" property="gatesid" />
+      <result column="gatesname" property="gatesname" />
+      <result column="areacode" property="areacode" />
+      <result column="uniqueid" property="uniqueid" />
+      <result column="type" property="type" />
+      <result column="inorout" property="inorout" />
+      <result column="address" property="address" />
+      <result column="addtime" property="addtime" />
+    </association>
+    
+    <association property="personnel" javaType="cn.edu.zjut.acs.model.Personnel">
+      <result column="personnelid" property="personnelid" />
+      <result column="name" property="name" />
+      <result column="sex" property="sex" />
+      <result column="credentials" property="credentials" />
+      <result column="tel" property="tel" />
+      <result column="areacode" property="areacode" />
+      <result column="address" property="address" />
+      <result column="remarks" property="remarks" />
+      <result column="addtime" property="addtime" />
+    </association>
+    
+    <association property="face" javaType="cn.edu.zjut.acs.model.Face">
+      <result column="faceid" property="faceid" />
+      <result column="personnelid" property="personnelid" />
+      <result column="path" property="path" />
+      <result column="facefeature" property="facefeature" />
+      <result column="addtime" property="addtime" />
+    </association>
+    
+  </resultMap>
+  
+  <sql id="cols">
+  	recordid,gatesid,inorout,personnelid,personneltype,path,faceid,score,createtime
+  </sql>
+  
+  <select id="getRecordByPK" resultType="cn.edu.zjut.acs.model.Record" parameterType="java.lang.Integer">
+    select <include refid="cols"/> from record where recordid = #{recordid}
+  </select>
+  
+  <select id="getRecordWithinTenMinutes" parameterType="java.util.Map" resultType="cn.edu.zjut.acs.model.Gate">
+	select <include refid="cols"/> from record
+		<where>
+		    <if test="1==1">
+		        createtime >=CURRENT_TIMESTAMP - INTERVAL 10 MINUTE 
+		    </if>          
+            <if test="gatesid != null"> 
+            	 and gatesid = #{gatesid}
+            </if>  
+	        <if test="personnelid != null">  
+	            and personnelid = #{personnelid}
+	        </if> 
+	        <if test="personneltype != null">  
+	            and personneltype = #{personneltype}
+	        </if> 
+	        <if test="inorout != null">  
+	            and inorout = #{inorout}
+	        </if>  
+        </where>
+	ORDER BY createtime DESC 
+	limit 1
+  </select>
+  
+  <insert id="saveRecord" parameterType="cn.edu.zjut.acs.model.Record">
+    insert into record (<include refid="cols"/>)
+    	values (null,#{gatesid},#{inorout},#{personnelid},#{personneltype},#{path},#{faceid},#{score},#{createtime} )
+  </insert>
+  
+  <update id="updateRecord" parameterType="cn.edu.zjut.acs.model.Record">
+  	update record set createtime = #{createtime} where recordid = #{recordid}
+  </update>
+  
+  <select id="getRecordList" parameterType="java.util.Map" resultType="cn.edu.zjut.acs.dto.RecordDTO">
+	select
+		x.recordid,z.areaname,x.inorout,m.name,x.personneltype,x.createtime
+		from record x left join gates y on x.gatesid = y.gatesid left join area z on y.areacode = z.areacode
+		<if test="personneltype != null and personneltype == 1">
+			left join personnel m on  x.personnelid = m.personnelid
+		</if>
+		<if test="personneltype != null and personneltype == 2">
+			left join visitor m on  x.personnelid = m.visitorid
+		</if>
+		<where>
+			<if test="personneltype != null">
+				and x.personneltype = #{personneltype}
+			</if>
+			<if test="personnelid != null">
+				and x.personnelid = #{personnelid}
+			</if>
+            <if test="gatesid != null"> 
+            	 and x.gatesid = #{gatesid}
+            </if>
+            <if test="inorout != null">  
+	            and x.inorout = #{inorout}
+	        </if>  
+	        <if test="areacode != null">  
+	            and y.areacode = #{areacode}
+	        </if> 
+	        <if test="starttime != null and starttime != ''">
+        		<![CDATA[ and date_format(x.createtime,'%Y-%m-%d') >= date_format(#{starttime},'%Y-%m-%d') ]]> 
+      		</if>
+      		<if test="endtime != null and endtime != ''">
+        		<![CDATA[ and date_format(x.createtime,'%Y-%m-%d') <= date_format(#{endtime},'%Y-%m-%d') ]]> 
+      		</if> 
+      		
+        </where>
+		ORDER BY x.createtime DESC 
+		<if test="pageCommon != null and pageCommon.startRow != null and pageCommon.pageSize != null ">
+			limit #{pageCommon.startRow},#{pageCommon.pageSize}
+		</if>
+  </select>
+  
+  <select id="getTotalNumber" parameterType="java.util.Map" resultType="java.lang.Integer">
+	select count(x.recordid)
+		from record x left join gates y on x.gatesid = y.gatesid left join area z on y.areacode = z.areacode
+		<if test="personneltype != null and personneltype == 1">
+			left join personnel m on  x.personnelid = m.personnelid
+		</if>
+		<if test="personneltype != null and personneltype == 2">
+			left join visitor m on  x.personnelid = m.visitorid
+		</if>
+		<where>
+			<if test="personneltype != null">
+				and x.personneltype = #{personneltype}
+			</if>
+            <if test="gatesid != null"> 
+            	 and x.gatesid = #{gatesid}
+            </if>
+            <if test="inorout != null">  
+	            and x.inorout = #{inorout}
+	        </if>  
+	        <if test="areacode != null">  
+	            and y.areacode = #{areacode}
+	        </if> 
+	        <if test="starttime != null and starttime != ''">
+        		<![CDATA[ and date_format(x.createtime,'%Y-%m-%d') >= date_format(#{starttime},'%Y-%m-%d') ]]> 
+      		</if>
+      		<if test="endtime != null and endtime != ''">
+        		<![CDATA[ and date_format(x.createtime,'%Y-%m-%d') <= date_format(#{endtime},'%Y-%m-%d') ]]> 
+      		</if>  
+      		
+        </where>
+  </select>
+  
+  <select id="getNotOutRecordList" parameterType="java.util.Map" resultType="cn.edu.zjut.acs.dto.RecordDTO">
+	select
+		x.recordid,z.areaname,x.inorout,m.name,x.personneltype,x.createtime from
+		(select * from record p where exists (select id,time from (select t.PERSONNELID id,max(t.CREATETIME) time from record t GROUP BY t.PERSONNELID) q where p.PERSONNELID=q.id and p.CREATETIME=q.time) and p.INOROUT=1) x 
+		left join gates y on x.gatesid = y.gatesid left join area z on y.areacode = z.areacode
+		<if test="personneltype != null and personneltype == 1">
+			left join personnel m on  x.personnelid = m.personnelid
+		</if>
+		<if test="personneltype != null and personneltype == 2">
+			left join visitor m on  x.personnelid = m.visitorid
+		</if>
+		<where>
+			<if test="personneltype != null">
+				and x.personneltype = #{personneltype}
+			</if>
+	        <if test="areacode != null">  
+	            and y.areacode = #{areacode}
+	        </if> 
+      		<if test="time != null and time != ''">
+        		<![CDATA[ and date_format(x.createtime,'%Y-%m-%d') = date_format(#{time},'%Y-%m-%d') ]]> 
+      		</if> 
+        </where>
+		ORDER BY x.createtime DESC
+		<if test="pageCommon != null and pageCommon.startRow != null and pageCommon.pageSize != null ">
+			limit #{pageCommon.startRow},#{pageCommon.pageSize}
+		</if> 
+  </select>
+  
+    <select id="getNotOutTotalNumber" parameterType="java.util.Map" resultType="java.lang.Integer">
+	select count(x.recordid) from 
+		(select * from record p where exists (select id,time from (select t.PERSONNELID id,max(t.CREATETIME) time from record t GROUP BY t.PERSONNELID) q where p.PERSONNELID=q.id and p.CREATETIME=q.time) and p.INOROUT=1) x 
+		left join gates y on x.gatesid = y.gatesid left join area z on y.areacode = z.areacode
+		<if test="personneltype != null and personneltype == 1">
+			left join personnel m on  x.personnelid = m.personnelid
+		</if>
+		<if test="personneltype != null and personneltype == 2">
+			left join visitor m on  x.personnelid = m.visitorid
+		</if>
+		<where>
+			<if test="personneltype != null">
+				and x.personneltype = #{personneltype}
+			</if>
+	        <if test="areacode != null">  
+	            and y.areacode = #{areacode}
+	        </if> 
+      		<if test="time != null and time != ''">
+        		<![CDATA[ and date_format(x.createtime,'%Y-%m-%d') = date_format(#{time},'%Y-%m-%d') ]]> 
+      		</if> 
+        </where>
+  </select>
+  
+</mapper>

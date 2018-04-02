@@ -54,7 +54,7 @@ public interface PersonnelService {
 	 * @param faceList
 	 * @param log
 	 */
-	//void t_delete(Personnel personnel,List<Face> faceList,XT_LOG log,String physicalpath);
+//	void t_delete(Personnel personnel,List<Face> faceList,XT_LOG log,String physicalpath);
 	/**
 	 * 更新人员信息
 	 * @param personnel

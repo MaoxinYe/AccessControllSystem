@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.zjut.acs.mapper.WorktimeMapper" >
+
+	<sql id="cols">
+		worktimeid,starttime,endtime,illustrate,status
+	</sql>
+	
+  	<select id="getWorktimeByPK" resultType="cn.edu.zjut.acs.model.Worktime" parameterType="java.lang.Integer">
+    	select * from worktime where worktimeid = #{key}
+  	</select>
+	
+	<select id="getWorktimeList" parameterType="java.util.Map" resultType="cn.edu.zjut.acs.model.Worktime">
+		select * from worktime
+			<where>
+				<if test="status != null" >
+					and status = #{status}
+				</if>
+				<if test="illustrate != null and illustrate != ''" >
+					and illustrate = #{illustrate}
+				</if>
+			</where>
+			order by status desc,worktimeid asc
+	</select>
+
+	<insert id="saveWorktime" parameterType="cn.edu.zjut.acs.model.Worktime">
+    	insert into worktime (starttime,endtime,illustrate,status)
+        values (#{starttime},#{endtime},#{illustrate},#{status})
+    </insert>
+    
+    <update id="updateWorktime" parameterType="cn.edu.zjut.acs.model.Worktime">
+    	update worktime m set starttime = #{starttime}, endtime = #{endtime},illustrate = #{illustrate}, status = #{status}
+    	where worktimeid = #{worktimeid}
+    </update>
+    
+    <delete id="deleteWorktime" parameterType="cn.edu.zjut.acs.model.Worktime">
+        delete from worktime where worktimeid = #{worktimeid}
+    </delete>
+
+</mapper>

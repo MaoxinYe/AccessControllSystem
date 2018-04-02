@@ -13,18 +13,19 @@ public class mytest {
 	public static void main(String[] args)
 	{
 		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-		LogMapper p=context.getBean(LogMapper.class);
+		LogMapper p=(LogMapper) context.getBean("LogMapper");
+		XT_LOG t=new XT_LOG();
+		t.setAddtime(new Date());
+		t.setContent("测试的-----------------");
+		t.setUsername("admin");
+		t.setClientip(null);
+		p.saveLog(t);
 		/*for(int i=1;i<=30;i++)
 			p.deleteLogByPk(i);*/
-		for(int i=0;i<30;i++)
+		/*for(int i=0;i<30;i++)
 		{	
-			XT_LOG t=new XT_LOG();
-			t.setAddtime(new Date());
-			t.setContent("测试的"+i);
-			t.setUsername("admin");
-			t.setClientip(null);
-			p.saveLog(t);
-		}
+			
+		}*/
 		//testController t=context.getBean(testController.class);
 		//t.login();
 	}

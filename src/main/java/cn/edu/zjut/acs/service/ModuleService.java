@@ -14,6 +14,12 @@ public interface ModuleService {
      */
 	Module getEntityByPK (Integer modulecode);
 	/**
+     * 根据moduleid查询模块信息
+     * @param id
+     * @return Module
+     */
+	Module getEntityByModuleid (Integer moduleid);
+	/**
      * 查询模块信息列表
      * @param map
      * @return List<Module>

@@ -313,13 +313,12 @@ public class VisitorController {
 		if(id != null){
 			Visitor visitor = visitorService.getVisitorByPK(id);
 			model.addAttribute("visitor", visitor);
-			/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			model.addAttribute("startTime", sdf.format(visitor.getStarttime()));
-			model.addAttribute("endTime", sdf.format(visitor.getEndtime()));*/
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			model.addAttribute("accesstime", sdf.format(visitor.getAccesstime()));
 		}
 		return "manage/visitor/system-visitor-edit";
 	}
-	/*
+	
 	@RequestMapping(value = "/system-visitor-edit", method = RequestMethod.POST)
 	@ResponseBody
 	public JSONReturn visitorEdit(HttpSession session, HttpServletRequest request,
@@ -327,9 +326,7 @@ public class VisitorController {
 			@RequestParam(value = "sex", required = false)Integer sex,
 			@RequestParam(value = "credentials", required = false ) String credentials,
 			@RequestParam(value = "tel", required = false ) String tel,
-			@RequestParam(value = "company", required = false ) String company,
-			@RequestParam(value = "startTime", required = false ) String startTime,
-			@RequestParam(value = "endTime", required = false ) String endTime,
+			@RequestParam(value = "startTime", required = false ) String accesstime,
 			@RequestParam(value = "personnel_name", required = false ) String personnel_name,
 			@RequestParam(value = "personnel_tel", required = false ) String personnel_tel,
 			@RequestParam(value = "remarks", required = false ) String remarks,
@@ -351,17 +348,9 @@ public class VisitorController {
 				saveFlag = true;
 				visitor.setTel(tel);
 			}
-			if(StringUtils.isNotBlank(startTime) && !startTime.equals(sdf.format(visitor.getStarttime()))){
+			if(StringUtils.isNotBlank(accesstime) && !accesstime.equals(sdf.format(visitor.getAccesstime()))){
 				saveFlag = true;
-				visitor.setStarttime(new java.sql.Date(sdf.parse(startTime).getTime()));
-			}
-			if(StringUtils.isNotBlank(endTime) && !endTime.equals(sdf.format(visitor.getEndtime()))){
-				saveFlag = true;
-				visitor.setEndtime(new java.sql.Date(sdf.parse(endTime).getTime()));
-			}
-			if(StringUtils.isNotBlank(company) && !company.equals(visitor.getCompany())){
-				saveFlag = true;
-				visitor.setCompany(company);
+				visitor.setAccesstime(new java.sql.Date(sdf.parse(accesstime).getTime()));
 			}
 			if(StringUtils.isNotBlank(personnel_name) && !personnel_name.equals(visitor.getPersonnel_name())){
 				saveFlag = true;
@@ -381,7 +370,8 @@ public class VisitorController {
 			map.put("tel",visitor.getTel());
 			List<Personnel> personList = personnelService.getPersonnelList(map);
 			if(personList != null && personList.size() > 0){
-				Personnel person = personList.get(0);
+				return  JSONReturn.buildFailure("该人员是内部人员");
+				/*Personnel person = personList.get(0);
 				Date newDate = sdf.parse(sdf.format(new Date()));
 				if(person.getType() == 1 && person.getExpirationdate() != null && person.getExpirationdate().getTime() > newDate.getTime()){
 					return  JSONReturn.buildFailure("该人员是有效的正常人员");
@@ -389,28 +379,29 @@ public class VisitorController {
 					return  JSONReturn.buildFailure("该人员是有效的外聘人员");
 				} else{
 					return  JSONReturn.buildFailure("该人员是黑名单人员");
-				}
+				}*/
 			}
 			//判断访客是否已有效存在
 			map.clear();
 			map.put("name",visitor.getName());
 			map.put("tel",visitor.getTel());
-			map.put("accesstime",visitor.getStarttime());
+			map.put("accesstime",visitor.getAccesstime());
 			List<Visitor> visitorList = visitorService.getVisitorList(map);
 			if(visitorList != null && visitorList.size() > 0){
-				Visitor yw_visitor = visitorList.get(0);
+				return  JSONReturn.buildFailure("在此访问时间内，该人员是已登记的访客");
+				/*Visitor yw_visitor = visitorList.get(0);
 				if(yw_visitor.getVisitorid() != visitor.getVisitorid()){
 					if(yw_visitor.getStatus() == 1){
 						return  JSONReturn.buildFailure("在此访问时间内，该人员是已登记的访客");
 					} else if(yw_visitor.getStatus() == 2){
 						return  JSONReturn.buildFailure("在此访问时间内，该人员是已激活的访客");
 					}
-				}
+				}*/
 			}
-			map.clear();
+			/*map.clear();
 			map.put("name",visitor.getName());
 			map.put("tel",visitor.getTel());
-			map.put("accesstime",visitor.getEndtime());
+			map.put("accesstime",visitor.getAccesstime());
 			visitorList = visitorService.getVisitorList(map);
 			if(visitorList != null && visitorList.size() > 0){
 				Visitor yw_visitor = visitorList.get(0);
@@ -421,7 +412,7 @@ public class VisitorController {
 						return  JSONReturn.buildFailure("在此访问时间内，该人员是已激活的访客");
 					}
 				}
-			}
+			}*/
 			//判断访问的对象是否是有效的
 			map.clear();
 			map.put("name", visitor.getPersonnel_name());
@@ -466,7 +457,7 @@ public class VisitorController {
 						//存照片地址
 						visitor.setPath(suffix + fileName);
 						
-						// 提取FaceDetector和FaceVerifier
+						/*// 提取FaceDetector和FaceVerifier
 						ServletContext sct = request.getServletContext();
 						FaceAPI faceAPI = (FaceAPI)sct.getAttribute("faceAPI");
 						//获取现行版本号
@@ -499,12 +490,12 @@ public class VisitorController {
 							} finally {
 								faceMap.put("flag", 0);
 							}
-						}
+						}*/
 						//存特征值
-						visitor.setFacefeature(feature_pic);
+						visitor.setFacefeature("这是临时的特征值");
 						
 						//将照片特征值加入到内存中
-						ServletContext servletContext = request.getServletContext();
+						/*ServletContext servletContext = request.getServletContext();
 						FaceVerifier faceverifier = null;
 						Pointer feature_pointer = null;
 						synchronized (this) {
@@ -547,7 +538,7 @@ public class VisitorController {
 								}
 							}
 						}
-						servletContext.setAttribute("visitorFaceFeature", list);
+						servletContext.setAttribute("visitorFaceFeature", list);*/
 					}
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
@@ -571,7 +562,7 @@ public class VisitorController {
 		}
 		return JSONReturn.buildSuccessWithEmptyBody();
 	}
-	*/
+	
 	@RequestMapping(value = { "system-visitor-del" }, method = { RequestMethod.GET })
 	@ResponseBody
 	public JSONReturn visitorDelete(@RequestParam(value = "id", required = false) Integer id,
@@ -580,7 +571,7 @@ public class VisitorController {
 			Visitor visitor = visitorService.getVisitorByPK(id);
 			if (visitor != null) {
 				//visitor.setStatus(3);
-				this.visitorService.updateVisitor(visitor);
+				this.visitorService.deleteVisitor(visitor);
 				return JSONReturn.buildSuccessWithEmptyBody();
 			}
 		}
@@ -591,8 +582,9 @@ public class VisitorController {
 	@ResponseBody
 	public JSONReturn visitorDelete(@RequestParam(value = "ids", required = false) Integer[] ids,
 			HttpSession session, HttpServletRequest request) {
+		
 		if (ids != null && ids.length > 0) {
-			this.visitorService.t_update(ids);
+			this.visitorService.t_delete(ids);
 			return JSONReturn.buildSuccessWithEmptyBody();
 		}
 		return JSONReturn.buildFailure("数据错误!");

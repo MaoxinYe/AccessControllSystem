@@ -8,7 +8,7 @@ public class Worktime implements Serializable{
 	private Integer worktimeid;
 	private Date starttime;
 	private Date endtime;
-	private String ilustrate;
+	private String illustrate;
 	private Integer status;
 	public Integer getWorktimeid() {
 		return worktimeid;
@@ -28,11 +28,11 @@ public class Worktime implements Serializable{
 	public void setEndtime(Date endtime) {
 		this.endtime = endtime;
 	}
-	public String getIlustrate() {
-		return ilustrate;
+	public String getIllustrate() {
+		return illustrate;
 	}
-	public void setIlustrate(String ilustrate) {
-		this.ilustrate = ilustrate;
+	public void setIllustrate(String illustrate) {
+		this.illustrate = illustrate;
 	}
 	public Integer getStatus() {
 		return status;

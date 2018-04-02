@@ -5,16 +5,6 @@ import java.util.Map;
 
 import cn.edu.zjut.acs.model.Module;
 
-
-
-/** 
- * @ClassName: FaceidMapper
- * @author  <a href="mailto:945922054@qq.com">余其刚</a> 
- * @date 创建时间：2017年12月01日 下午3:16:42 
- * @version V1.0  
- * @since  JDK 1.7 
- */
-
 public interface ModuleMapper {
 	/**
      * 保存菜单
@@ -42,6 +32,12 @@ public interface ModuleMapper {
      * @return JC_MODULE
      */
     Module getEntityByPK (Integer modulecode);
+    /**
+     * 根据moduleid查询模块信息
+     * @param id
+     * @return JC_MODULE
+     */
+    Module getEntityByMoudleid (Integer modulecode);
 	/**
      * 查询模块信息列表
      * @param map

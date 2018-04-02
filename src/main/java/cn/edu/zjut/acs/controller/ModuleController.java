@@ -327,6 +327,7 @@ public class ModuleController {
 		return "manage/menubar/system-menubar-edit";
 	}
 	
+	@SuppressWarnings("null")
 	@RequestMapping(value = "/system-menubar-edit", method = RequestMethod.POST)
 	@ResponseBody
 	public JSONReturn systemMenubarEdit(HttpSession session, HttpServletRequest request,
@@ -341,28 +342,26 @@ public class ModuleController {
 			return JSONReturn.buildFailure(sb.toString());
 		}
 		if (!Strings.isNullOrEmpty(id)) {
-			Module entity = this.moduleService.getEntityByPK(Integer.valueOf(mv.getModulecode()));
-			if(entity!=null && Integer.compare(entity.getModulecode(), Integer.valueOf(id)) != 0){
+			Module entity = this.moduleService.getEntityByModuleid(Integer.parseInt(id.trim()));
+			if(entity!=null && Integer.compare(entity.getModulecode(), Integer.valueOf(mv.getModulecode())) != 0){
 				return JSONReturn.buildFailure("该菜单已存在!");
 			} else {
-				Module editEntity = this.moduleService.getEntityByPK(Integer.valueOf(id));
-				if (editEntity != null) {
-					String ipaddress = GetRemoteAddr.getIpAddr(request);
-					String session_loginname = (String) session.getAttribute("session_loginname");
-					// 记录日志
-					XT_LOG log = new XT_LOG();
-					log.setUsername(session_loginname);
-					log.setContent("修改系统菜单信息");
-					log.setClientip(ipaddress);
-					log.setAddtime(new Date());
-					//修系统菜单信息
-					editEntity.setModulename(mv.getModulename());
-					editEntity.setModulecode(Integer.valueOf(mv.getModulecode()));
-					editEntity.setSupercode(Integer.valueOf(mv.getSupercode()));
-					editEntity.setModulepage(mv.getModulepage());
-					this.moduleService.t_update(editEntity, log);
-					return JSONReturn.buildSuccessWithEmptyBody();
-				}
+				Module editEntity = this.moduleService.getEntityByModuleid(Integer.parseInt(id.trim()));
+				String ipaddress = GetRemoteAddr.getIpAddr(request);
+				String session_loginname = (String) session.getAttribute("session_loginname");
+				// 记录日志
+				XT_LOG log = new XT_LOG();
+				log.setUsername(session_loginname);
+				log.setContent("修改系统菜单信息");
+				log.setClientip(ipaddress);
+				log.setAddtime(new Date());
+				//修系统菜单信息
+				editEntity.setModulename(mv.getModulename());
+				editEntity.setModulecode(Integer.valueOf(mv.getModulecode()));
+				editEntity.setSupercode(Integer.valueOf(mv.getSupercode()));
+				editEntity.setModulepage(mv.getModulepage());
+				this.moduleService.t_update(editEntity, log);
+				return JSONReturn.buildSuccessWithEmptyBody();
 			}
 		}
 		return JSONReturn.buildFailure("数据错误!");

@@ -88,50 +88,29 @@
         </tbody>
         <thead>
             <tr class="text-c">
-                <th>人员类型</th>
                 <th>所属${area}</th>
-                <th>门禁卡号</th>
                 <th>详细地址</th>
+                <th>添加时间</th>
+                <th >备注</th>
             </tr>
         </thead>
         <tbody>
             <tr class="text-c">
                 <td>
-              		<c:forEach var="type" items="${personnelTypeList}">
-		 				<c:if test="${type.id == personnel.type}">${type.name}</c:if>
-					</c:forEach>
-                </td>
-                <td>
                 ${personnel.area.areaname}
-                </td>
-                <td>
-                ${personnel.cardid}
                 </td>
                 <td>
                 ${personnel.address}
                 </td>
-            </tr>
-        </tbody>
-        <thead>
-            <tr class="text-c">
-                <th>添加时间</th>
-                <th>截止日期</th>
-                <th colspan = '2'>备注</th>
-            </tr>
-        </thead>
-         <tbody>
-            <tr class="text-c">
                 <td>
                 <fmt:formatDate value="${personnel.addtime }" pattern="yyyy-MM-dd HH:mm:ss"/>
                 </td>
-                <td>
-                <fmt:formatDate value="${personnel.expirationdate }" pattern="yyyy-MM-dd"/>
-                </td>
-                <td colspan = '2'>
+                 <td >
                 ${personnel.remarks}
                 </td>
             </tr>
         </tbody>
+     
     </table>
     </div>
 		

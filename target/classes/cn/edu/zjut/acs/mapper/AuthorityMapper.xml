@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.zjut.acs.mapper.AuthorityMapper" >
+	<resultMap type="cn.edu.zjut.acs.model.Authority" id="authorityResult">
+	  <id column="authorityid" property="authorityid"/>
+	  <result column="roleid" property="roleid"/>
+	  <result column="moduleid" property="moduleid"/>
+	  
+	  <association property="role" javaType="cn.edu.zjut.acs.model.XT_ROLE">
+	  	<id column="roleid" property="roleid"/>
+	    <result column="rolename" property="rolename"/>
+	    <result column="addtime" property="addtime"/>
+	    
+	  </association>	 
+	  <association property="module" javaType="cn.edu.zjut.acs.model.Module">
+	  	<id column="moduleid" property="moduleid"/>
+	    <result column="modulecode" property="modulecode"/>
+	    <result column="modulename" property="modulename"/>
+	    <result column="supercode" property="supercode"/>
+	  </association>	     
+	</resultMap>
+
+	<select id="getAuthorityList" parameterType="java.util.Map" resultType="cn.edu.zjut.acs.dto.AuthorityDTO">
+		
+		select  x.roleid,x.moduleid,y.modulecode,y.supercode
+		from authority x,jc_module y
+			<where>
+				x.moduleid=y.moduleid
+				<if test="roleid != null and roleid != ''">
+					and x.roleid =#{ roleid} 
+				</if>
+				
+			</where>
+			ORDER BY x.moduleid DESC 
+	</select>
+			
+	<insert id="saveAuthority" parameterType="cn.edu.zjut.acs.model.Authority">
+		insert into authority(roleid,moduleid)
+			values(#{roleid},#{moduleid})
+	</insert>
+	
+	<delete id="deleteAuthorityByRoleid" parameterType="java.lang.Integer">
+        delete from authority where roleid = #{roleid}  
+    </delete>
+</mapper>

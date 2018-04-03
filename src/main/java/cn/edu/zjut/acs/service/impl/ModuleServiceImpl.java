@@ -66,4 +66,10 @@ public class ModuleServiceImpl implements ModuleService {
 		// TODO Auto-generated method stub
 		return this.moduleMapper.getEntityByMoudleid(moduleid);
 	}
+
+	@Override
+	public List<Module> getModuleListWithAhthority(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return moduleMapper.getModuleListWithAhthority(map);
+	}
 }

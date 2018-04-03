@@ -59,7 +59,7 @@
 					<td class="f-14">
 					    <a title="编辑" href="javascript:;" onclick="system_role_operation('角色类型编辑','system-role-edit.html?roleid='+${role.roleid})" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
 						<a title="删除" href="javascript:;" onclick="system_role_del(this, '${role.roleid}')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
-						<%-- <a title="权限设置" href="javascript:;" onclick="system_role_setting(${role.roleid})" style="text-decoration:none"><i class="Hui-iconfont">&#xe61d;</i></a> --%>
+						<a title="权限设置" href="javascript:;" onclick="system_role_setting(${role.roleid})" style="text-decoration:none"><i class="Hui-iconfont">&#xe61d;</i></a>
 					</td>
 				</tr>
 			</c:forEach>																								
@@ -96,7 +96,7 @@ function system_role_setting(roleid){
 		maxmin: true,
 		shade:0.4,
 		title: '权限设置',
-		content: 'system-role-setting.html?roleid='+roleid,
+		content: 'system-authority-manage.html?roleid='+roleid,
 		closeBtn: 1,
 	});
 }

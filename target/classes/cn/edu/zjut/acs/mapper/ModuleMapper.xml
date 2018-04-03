@@ -69,5 +69,15 @@
 	    </where>
 	    order by m.modulecode asc
     </select>
+  <select id="getModuleListWithAhthority" resultMap="moduleResult" parameterType="java.util.Map">
+		select m.* from jc_module m,authority a
+		<where>
+			  m.moduleid=a.moduleid
+			  <if test="roleid != null and roleid != '' ">  
+	           and a.roleid = #{roleid}
+	        </if> 
+	       	    </where>
+	    order by m.modulecode asc
+    </select>
   
 </mapper>

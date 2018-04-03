@@ -28,20 +28,36 @@ public class IndexController {
 	private ModuleService moduleService;
 	
 	@RequestMapping(value = "/index.html")
-	public String index(Model model) {
+	public String index(Model model,HttpSession session) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		//菜单列表
 		List<MenuBarDTO> menuList = new ArrayList<MenuBarDTO>();
 		// 取主菜单
-		map.put("modulelevel", 0);
-		List<Module> moduleList = moduleService.getModuleList(map);
+		Integer roleid=(Integer) session.getAttribute("roleid");
+		map.put("roleid", roleid);
+		List<Module> allModuleList = moduleService.getModuleListWithAhthority(map);
+		List<Module> moduleList=new ArrayList<Module>();
+		for(Module module:allModuleList)
+		{
+			if(Integer.compare(module.getModulelevel(), 0)==0)
+			{
+				moduleList.add(module);
+			}
+		}
 		if(moduleList != null && moduleList.size()>0 ){
-			System.out.println(moduleList.size());
+			//System.out.println(moduleList.size());
 			for (Module module : moduleList) {
 				//取主菜单下级菜单
-				map.clear();
-				map.put("supercode", module.getModulecode());
-				List<Module> mList = moduleService.getModuleList(map);
+				/*map.clear();
+				map.put("supercode", module.getModulecode());*/
+				List<Module> mList = new ArrayList<Module>();
+				for(Module menu:allModuleList)
+				{
+					if(Integer.compare(menu.getSupercode(), module.getModulecode())==0)
+					{
+						mList.add(menu);
+					}
+				}
 				//菜单栏
 				MenuBarDTO menuBarDto = new MenuBarDTO();
 				menuBarDto.setModulecode(module.getModulecode());

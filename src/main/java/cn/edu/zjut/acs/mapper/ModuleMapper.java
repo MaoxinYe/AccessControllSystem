@@ -44,6 +44,7 @@ public interface ModuleMapper {
      * @return List<JC_MODULE>
      */
 	List<Module> getModuleList (Map<String,Object> map);
+	List<Module> getModuleListWithAhthority (Map<String,Object> map);
 	/**
 	 * 通过模块名称查询模块信息
 	 * @param modulename

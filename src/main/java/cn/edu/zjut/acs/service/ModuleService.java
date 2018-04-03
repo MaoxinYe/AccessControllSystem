@@ -25,6 +25,9 @@ public interface ModuleService {
      * @return List<Module>
      */
 	List<Module> getModuleList (Map<String,Object> map);
+
+	List<Module> getModuleListWithAhthority (Map<String,Object> map);
+	
 	/**
 	 * 通过模块名称查询模块信息
 	 * @param modulename

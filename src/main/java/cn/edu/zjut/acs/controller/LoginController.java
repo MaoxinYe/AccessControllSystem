@@ -52,6 +52,7 @@ public class LoginController {
 				session.setAttribute("session_loginname",user.getUsername());
 				session.setAttribute("session_userid",user.getUserid());
 				session.setAttribute("session_photoVirtualPath", resourceBean.getVirtualPath());
+				session.setAttribute("roleid", user.getRoleid());
 				return JSONReturn.buildSuccessWithEmptyBody();
 			}
 			else
